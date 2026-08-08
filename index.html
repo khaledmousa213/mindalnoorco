@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Alnoor | Advanced Medical Imaging Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        medical: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans text-gray-800 antialiased bg-gray-50">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md fixed w-full z-50 top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center">
+                    <span class="text-3xl font-bold text-medical-700 tracking-tight">Mind<span class="text-medical-500">Alnoor</span></span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-600 hover:text-medical-700 font-medium transition">Home</a>
+                    <a href="#equipment" class="text-gray-600 hover:text-medical-700 font-medium transition">Equipment</a>
+                    <a href="#services" class="text-gray-600 hover:text-medical-700 font-medium transition">Services</a>
+                    <a href="#contact" class="bg-medical-700 text-white px-6 py-2 rounded-full font-medium hover:bg-medical-900 transition shadow-lg">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-32 pb-20 md:pt-40 md:pb-28 bg-gradient-to-br from-medical-50 to-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 text-center md:text-left mb-10 md:mb-0">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
+                    Precision in <span class="text-medical-700">Medical Imaging</span>
+                </h1>
+                <p class="text-lg text-gray-600 mb-8 max-w-lg mx-auto md:mx-0">
+                    Delivering state-of-the-art ultrasound systems, diagnostic displays, and comprehensive radiology solutions to elevate healthcare standards.
+                </p>
+                <div class="flex justify-center md:justify-start space-x-4">
+                    <a href="#equipment" class="bg-medical-700 text-white px-8 py-3 rounded-full font-semibold hover:bg-medical-900 transition shadow-lg">Explore Solutions</a>
+                    <a href="#contact" class="bg-white text-medical-700 border border-medical-200 px-8 py-3 rounded-full font-semibold hover:bg-medical-50 transition shadow-sm">Get a Quote</a>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <!-- Placeholder for a medical equipment/ultrasound image -->
+                <div class="w-full max-w-md h-80 bg-gray-200 rounded-2xl shadow-2xl overflow-hidden relative">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-medical-700/20 to-transparent z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Medical Imaging Equipment" class="object-cover w-full h-full" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Solutions Section -->
+    <section id="equipment" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Our Core Solutions</h2>
+                <div class="w-24 h-1 bg-medical-500 mx-auto rounded"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Solution 1 -->
+                <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-xl transition duration-300 group">
+                    <div class="w-16 h-16 bg-medical-100 text-medical-700 rounded-xl flex items-center justify-center text-2xl mb-6 group-hover:bg-medical-700 group-hover:text-white transition">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Ultrasound Systems</h3>
+                    <p class="text-gray-600">High-performance imaging technology designed for accurate diagnostics across diverse clinical environments.</p>
+                </div>
+                <!-- Solution 2 -->
+                <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-xl transition duration-300 group">
+                    <div class="w-16 h-16 bg-medical-100 text-medical-700 rounded-xl flex items-center justify-center text-2xl mb-6 group-hover:bg-medical-700 group-hover:text-white transition">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Diagnostic Displays</h3>
+                    <p class="text-gray-600">DICOM-calibrated monitors providing exceptional clarity and reliability for radiology and clinical review.</p>
+                </div>
+                <!-- Solution 3 -->
+                <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-xl transition duration-300 group">
+                    <div class="w-16 h-16 bg-medical-100 text-medical-700 rounded-xl flex items-center justify-center text-2xl mb-6 group-hover:bg-medical-700 group-hover:text-white transition">
+                        <i class="fas fa-x-ray"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Radiology & C-Arm</h3>
+                    <p class="text-gray-600">Advanced DRF systems and C-arms tailored for surgical interventions and comprehensive radiological workflows.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services & Expertise -->
+    <section id="services" class="py-20 bg-medical-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <h2 class="text-3xl font-bold mb-6">Expert Technical & Clinical Support</h2>
+                    <p class="text-medical-100 mb-6 text-lg">
+                        We don't just supply equipment; we ensure it performs flawlessly. Our certified engineering team provides comprehensive lifecycle management for your critical assets.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-medical-500 mr-3 text-xl"></i>
+                            <span>On-site Installation & System Configuration</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-medical-500 mr-3 text-xl"></i>
+                            <span>Clinical Application Training for Medical Staff</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-medical-500 mr-3 text-xl"></i>
+                            <span>Preventative Maintenance & Rapid Technical Service</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-medical-500 mr-3 text-xl"></i>
+                            <span>Software Updates & DICOM Integration</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="md:w-1/2 grid grid-cols-2 gap-4">
+                    <div class="bg-medical-700/50 p-6 rounded-xl border border-medical-500/30 text-center">
+                        <div class="text-4xl font-bold text-medical-100 mb-2">24/7</div>
+                        <div class="text-sm text-medical-100">Technical Support</div>
+                    </div>
+                    <div class="bg-medical-700/50 p-6 rounded-xl border border-medical-500/30 text-center mt-8">
+                        <div class="text-4xl font-bold text-medical-100 mb-2">100%</div>
+                        <div class="text-sm text-medical-100">DICOM Compliance</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-gray-900 text-gray-400 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <span class="text-2xl font-bold text-white tracking-tight mb-4 block">Mind<span class="text-medical-500">Alnoor</span></span>
+                <p class="text-sm">Partnering with healthcare providers to deliver innovative medical equipment, automated workflow solutions, and unparalleled technical expertise.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-4 uppercase text-sm tracking-wider">Contact</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><i class="fas fa-envelope mr-2"></i> info@mindalnoor.com</li>
+                    <li><i class="fas fa-globe mr-2"></i> www.mindalnoor.com</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-4 uppercase text-sm tracking-wider">Quick Links</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#home" class="hover:text-white transition">Home</a></li>
+                    <li><a href="#equipment" class="hover:text-white transition">Equipment</a></li>
+                    <li><a href="#services" class="hover:text-white transition">Services</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-gray-800 text-sm text-center">
+            &copy; 2026 Mind Alnoor. All rights reserved.
+        </div>
+    </footer>
+
+</body>
+</html>
