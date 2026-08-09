@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Alnoor Co. - Medical Equipment</title>
+    <!-- خطوط جاهزة ليكون التصميم أنيق -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* === إعدادات عامة === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: #ffffff; color: #333; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* === 1. الشعار في القائمة === */
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-graphic {
+            position: relative;
+            width: 60px;
+            height: 45px;
+            flex-shrink: 0;
+        }
+        .logo-shape { position: absolute; border-radius: 10px; opacity: 0.9; }
+        .ls-1 { background: rgba(161, 206, 207, 0.7); width: 35px; height: 35px; top: 0; left: 0; z-index: 1; }
+        .ls-2 { background: #6bd2ef; width: 35px; height: 35px; top: -5px; right: 5px; z-index: 2; }
+        .ls-3 { background: #92c84a; width: 35px; height: 35px; bottom: 0; left: 12px; z-index: 3; }
+        .logo-line {
+            position: absolute; top: 45%; left: 5px; width: 50px; height: 20px; transform: translateY(-50%); z-index: 10;
+        }
+        .logo-line svg { width: 100%; height: 100%; stroke: white; stroke-width: 2.5; fill: none; stroke-linejoin: round; }
+        
+        .logo-text h2 { font-size: 22px; font-weight: 500; line-height: 1; color: #000; }
+        .logo-text p { font-size: 12px; font-weight: 300; color: #333; margin-top: 2px; }
+
+        /* === 2. القائمة (Navbar) === */
+        header {
+            background: #fff;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        .nav-links a { font-weight: 500; font-size: 16px; transition: color 0.3s; }
+        .nav-links a:hover { color: #6bd2ef; }
+        .btn-nav {
+            background-color: #92c84a;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        .btn-nav:hover { background-color: #7ab33e; color: white !important; }
+
+        /* === 3. قسم الهيرو (Hero Section) === */
+        .hero {
+            display: flex;
+            align-items: center;
+            padding: 80px 0;
+            gap: 50px;
+        }
+        .hero-content { flex: 1; }
+        .hero-content h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        .hero-content h1 span { color: #92c84a; }
+        .hero-content p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+        .btn-primary {
+            background-color: #6bd2ef;
+            color: white;
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 500;
+            display: inline-block;
+            transition: 0.3s;
+        }
+        .btn-primary:hover { background-color: #4ab8d6; transform: translateY(-2px); }
+        
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-logo-big {
+            position: relative;
+            width: 300px;
+            height: 220px;
+        }
+        .hero-logo-big .shape { width: 160px; height: 160px; border-radius: 30px; }
+        .hero-logo-big .ls-1 { width: 160px; height: 160px; top: 0; left: 10px; }
+        .hero-logo-big .ls-2 { width: 160px; height: 160px; top: -20px; right: 15px; }
+        .hero-logo-big .ls-3 { width: 160px; height: 160px; bottom: 0; left: 50px; }
+        .hero-logo-big .logo-line { width: 220px; height: 90px; left: 20px; }
+        .hero-logo-big .logo-line svg { stroke-width: 4; }
+
+        /* === 4. قسم الخدمات (Features) === */
+        .features {
+            padding: 80px 0;
+            background-color: #f9fbfd;
+            text-align: center;
+        }
+        .features h2 { font-size: 36px; margin-bottom: 10px; }
+        .features .subtitle { color: #666; font-size: 18px; margin-bottom: 50px; }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        .feature-card {
+            background: white;
+            padding: 40px 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .feature-card h3 { font-size: 22px; margin-bottom: 10px; }
+        .feature-card p { color: #666; }
+
+        /* === 5. تذييل الصفحة (Footer) === */
+        footer {
+            background-color: #222;
+            color: #aaa;
+            padding: 40px 0;
+            text-align: center;
+        }
+        footer p { margin-bottom: 10px; }
+        footer span { color: #92c84a; }
+
+        /* === استجابة للجوال (Mobile) === */
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .hero { flex-direction: column-reverse; text-align: center; padding: 40px 0; }
+            .hero-content p { max-width: 100%; }
+            .grid-3 { grid-template-columns: 1fr; }
+            .hero-logo-big { width: 200px; height: 160px; }
+            .hero-logo-big .shape { width: 110px; height: 110px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- القائمة العلوية -->
+    <header>
+        <div class="container navbar">
+            <!-- الشعار (رابط الصفحة الرئيسية) -->
+            <a href="/" class="logo-wrapper">
+                <div class="logo-graphic">
+                    <div class="logo-shape ls-1"></div>
+                    <div class="logo-shape ls-2"></div>
+                    <div class="logo-shape ls-3"></div>
+                    <div class="logo-line">
+                        <svg viewBox="0 0 50 20"><polyline points="0,10 10,10 13,2 17,18 22,10 50,10" /></svg>
+                    </div>
+                </div>
+                <div class="logo-text">
+                    <h2>Mind Alnoor Co.</h2>
+                    <p>Medical Equipment</p>
+                </div>
+            </a>
+
+            <!-- روابط القائمة -->
+            <ul class="nav-links">
+                <li><a href="/">الرئيسية</a></li>
+                <li><a href="/products">منتجاتنا</a></li>
+                <li><a href="/about">عن الشركة</a></li>
+                <li><a href="/contact">اتصل بنا</a></li>
+                <li><a href="/contact" class="btn-nav">طلب عرض سعر</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- قسم الهيرو (الترحيبي) -->
+    <section class="hero container">
+        <div class="hero-content">
+            <h1>حلول طبية <br><span>موثوقة ومتطورة</span></h1>
+            <p>نوفر أحدث الأجهزة والمعدات الطبية بأعلى معايير الجودة لخدمة القطاع الصحي في المنطقة. نلتزم بتقديم الدعم الفني المتكامل لعملائنا الكرام.</p>
+            <a href="/products" class="btn-primary">تصفح منتجاتنا</a>
+        </div>
+        <div class="hero-image">
+            <div class="hero-logo-big">
+                <div class="logo-shape ls-1"></div>
+                <div class="logo-shape ls-2"></div>
+                <div class="logo-shape ls-3"></div>
+                <div class="logo-line">
+                    <svg viewBox="0 0 220 90"><polyline points="0,40 40,40 55,10 75,80 95,40 220,40" /></svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم الخدمات -->
+    <section class="features">
+        <div class="container">
+            <h2>خدماتنا المتميزة</h2>
+            <p class="subtitle">نحرص على توفير أفضل الحلول لشركائنا في القطاع الصحي</p>
+            <div class="grid-3">
+                <div class="feature-card">
+                    <span class="feature-icon">🩺</span>
+                    <h3>معدات تشخيصية</h3>
+                    <p>أجهزة متطورة للفحص والتشخيص الطبي الدقيق، مقدمة من أفضل العلامات التجارية العالمية.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⚕️</span>
+                    <h3>دعم فني وخدمات</h3>
+                    <p>فريق صيانة ودعم فني مدرب ومتاح لتقديم المساعدة وضمان استمرارية عمل أجهزتكم.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📦</span>
+                    <h3>استيراد وتوريد</h3>
+                    <p>توريد المعدات الطبية والمستلزمات وفق أعلى معايير الجودة والسلامة العالمية المعتمدة.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- تذييل الصفحة -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 <span>Mind Alnoor Co.</span> - All Rights Reserved.</p>
+            <p>for Medical Equipment</p>
+        </div>
+    </footer>
+
+</body>
+</html>
