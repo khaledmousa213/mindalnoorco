@@ -2,19 +2,16 @@ backend:
   name: git-gateway
   branch: main
 
-# This line is new and fixes the blank screen
-site_url: https://mindalnoor.com
-
 media_folder: "public/images"
 public_folder: "/images"
 
 collections:
   - name: "page"
-    label: "Main Page"
+    label: "My Website"
     files:
       - file: "public/index.html"
         label: "Homepage"
         name: "home"
         fields:
-          - { name: "title", label: "Page Title", widget: "string" }
-          - { name: "body", label: "Page Content", widget: "text" }
+          - { name: title, label: "Page Title", widget: string }
+          - { name: body, label: "Content", widget: text }
