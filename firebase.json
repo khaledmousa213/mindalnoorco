@@ -8,7 +8,7 @@
     ],
     "rewrites": [
       {
-        "source": "/admin/config.yml",
+        "source": "/admin/**",
         "destination": "/admin/index.html"
       },
       {
