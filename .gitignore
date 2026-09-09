@@ -6,6 +6,9 @@ coverage/
 *.log
 .env*
 !.env.example
+# Firebase web config is public by design (it ships in the client bundle);
+# committing it lets the Cloudflare Git build produce a working deploy.
+!.env.production
 
 # Firebase service account key used only by scripts/seed.ts
 serviceAccountKey.json
