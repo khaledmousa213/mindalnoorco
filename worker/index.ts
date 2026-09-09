@@ -12,6 +12,13 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
+    // Canonical host: send the bare apex to https://www.
+    if (url.hostname === 'mindalnoor.com') {
+      url.hostname = 'www.mindalnoor.com';
+      url.protocol = 'https:';
+      return Response.redirect(url.toString(), 301);
+    }
+
     if (url.pathname === '/api/quote-notify') {
       return handleQuoteNotify(request, env);
     }

@@ -5,11 +5,15 @@
   "compatibility_date": "2025-09-01",
   "workers_dev": true,
   "preview_urls": true,
-  "routes": [{ "pattern": "www.mindalnoor.com", "custom_domain": true }],
+  "routes": [
+    { "pattern": "www.mindalnoor.com", "custom_domain": true },
+    { "pattern": "mindalnoor.com", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
   },
   "observability": {
     "enabled": true
