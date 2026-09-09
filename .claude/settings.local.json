@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(rm -f src/components/ProductComparisonModal.tsx src/components/RoiCalculatorModal.tsx src/components/QuoteDrawer.tsx src/components/QuoteTrackerModal.tsx src/components/QuoteSuccessModal.tsx src/components/ProductDetailModal.tsx src/components/SpecialistContactModal.tsx src/components/AboutModal.tsx src/components/HeroBanner.tsx src/components/FeaturedDiagnosticSolutions.tsx src/components/CategoryNavCards.tsx src/components/AdminProductModal.tsx src/components/LoginModal.tsx src/types.ts metadata.json bun.lock)",
-      "Bash(rm -rf src/data)"
-    ]
-  }
-}
