@@ -1,0 +1,21 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /products/{allPaths=**} {
+      // Product images and datasheets are shown publicly.
+      allow read: if true;
+
+      // Only signed-in staff may change files. Since admin accounts are the only
+      // accounts that exist, request.auth != null is sufficient. For tighter
+      // control, switch to a custom "admin" claim and check request.auth.token.admin.
+      allow create, update: if request.auth != null
+        && request.resource.size < 25 * 1024 * 1024;
+      allow delete: if request.auth != null;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
