@@ -3,6 +3,9 @@
   "name": "mindalnoorco",
   "main": "worker/index.ts",
   "compatibility_date": "2025-09-01",
+  "workers_dev": true,
+  "preview_urls": true,
+  "routes": [{ "pattern": "www.mindalnoor.com", "custom_domain": true }],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
