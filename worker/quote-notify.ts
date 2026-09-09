@@ -1,18 +1,16 @@
 /**
- * Cloudflare Pages Function: POST /api/quote-notify
+ * POST /api/quote-notify — emails the site owner when a visitor submits a quote
+ * or contact request. The browser has already written the request to Firestore,
+ * so this is best-effort: it returns 200 unless the body is malformed, and does
+ * nothing when the Resend env vars are absent.
  *
- * Sends the site owner an email when a visitor submits a quote / contact
- * request. The browser has already written the request to Firestore, so this
- * endpoint is best-effort: it always returns 200 unless the request body is
- * malformed, and it silently does nothing when the Resend env vars are absent.
- *
- * Configure in Cloudflare Pages -> Settings -> Environment variables:
+ * Set in Cloudflare (Workers & Pages -> your project -> Settings -> Variables):
  *   RESEND_API_KEY    - API key from https://resend.com
  *   QUOTE_NOTIFY_TO   - where to send notifications, e.g. sales@mindalnoor.com
- *   QUOTE_NOTIFY_FROM - a verified Resend sender, e.g. "Mind Alnoor <site@yourdomain.com>"
+ *   QUOTE_NOTIFY_FROM - a verified Resend sender, e.g. "Mind Alnoor <site@mindalnoor.com>"
  */
 
-interface Env {
+export interface QuoteNotifyEnv {
   RESEND_API_KEY?: string;
   QUOTE_NOTIFY_TO?: string;
   QUOTE_NOTIFY_FROM?: string;
@@ -51,11 +49,13 @@ const escapeHtml = (value: string): string =>
     }
   });
 
-export async function onRequestPost(context: {
-  request: Request;
-  env: Env;
-}): Promise<Response> {
-  const { request, env } = context;
+export async function handleQuoteNotify(
+  request: Request,
+  env: QuoteNotifyEnv,
+): Promise<Response> {
+  if (request.method !== 'POST') {
+    return json({ ok: false, error: 'method_not_allowed' }, 405);
+  }
 
   let payload: QuotePayload;
   try {
@@ -69,12 +69,11 @@ export async function onRequestPost(context: {
   }
 
   if (!env.RESEND_API_KEY || !env.QUOTE_NOTIFY_TO || !env.QUOTE_NOTIFY_FROM) {
-    // Email not configured — the Firestore record is the source of truth.
     return json({ ok: true, emailed: false });
   }
 
   const products = (payload.products ?? []).map((p) => p.name).join(', ') || '—';
-  const lines: [string, string][] = [
+  const rows: [string, string][] = [
     ['Name', payload.name ?? ''],
     ['Email', payload.email ?? ''],
     ['Phone', payload.phone ?? ''],
@@ -87,7 +86,7 @@ export async function onRequestPost(context: {
   const html = `
     <h2>New quote request</h2>
     <table cellpadding="6" style="border-collapse:collapse">
-      ${lines
+      ${rows
         .map(
           ([k, v]) =>
             `<tr><td style="color:#64748b"><strong>${k}</strong></td><td>${escapeHtml(v || '—')}</td></tr>`,
@@ -114,11 +113,7 @@ export async function onRequestPost(context: {
         html,
       }),
     });
-
-    if (!res.ok) {
-      return json({ ok: true, emailed: false, status: res.status });
-    }
-    return json({ ok: true, emailed: true });
+    return json({ ok: true, emailed: res.ok, status: res.status });
   } catch {
     return json({ ok: true, emailed: false });
   }
