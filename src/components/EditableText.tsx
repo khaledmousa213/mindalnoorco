@@ -48,7 +48,8 @@ interface EditableTextProps {
   defaultValue: string;
   as?: TextTag;
   className?: string;
-  /** Use a multi-line textarea instead of a single-line input when editing. */
+  /** Use a resizable textarea instead of a single-line input when editing.
+   *  Defaults to true for anything except `span` (short inline labels). */
   multiline?: boolean;
 }
 
@@ -63,15 +64,16 @@ export function EditableText({
   defaultValue,
   as: Tag = 'span',
   className = '',
-  multiline = false,
+  multiline,
 }: EditableTextProps) {
+  const isMultiline = multiline ?? Tag !== 'span';
   const { isAdmin } = useAuth();
   const { content, setValue } = useSiteContent();
   const value = content[id] ?? defaultValue;
 
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
-  const [status, setStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   useEffect(() => {
     if (!editing) setDraft(value);
@@ -94,13 +96,16 @@ export function EditableText({
       setStatus('saved');
       setTimeout(() => setStatus('idle'), 1500);
     } catch {
-      setStatus('idle');
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 2500);
     }
   };
 
   if (editing) {
-    const inputClass = `${className} w-full min-w-0 bg-amber-50 border-2 border-amber-400 rounded-md outline-none px-1.5 py-0.5`;
-    return multiline ? (
+    // box-border keeps the border/padding inside the same width as the text
+    // it replaces, instead of growing past the surrounding layout.
+    const inputClass = `${className} block w-full box-border bg-amber-50 border-2 border-amber-400 rounded-md outline-none px-2 py-1`;
+    return isMultiline ? (
       <textarea
         autoFocus
         rows={3}
@@ -113,7 +118,7 @@ export function EditableText({
             setEditing(false);
           }
         }}
-        className={inputClass}
+        className={`${inputClass} resize-y`}
       />
     ) : (
       <input
@@ -141,15 +146,19 @@ export function EditableText({
         setEditing(true);
       }}
       title="Click to edit"
-      className={`${className} group/edit relative inline cursor-text rounded-md ring-1 ring-transparent hover:ring-teal-400 hover:bg-teal-50/60 transition px-0.5 -mx-0.5`}
+      className={`${className} group/edit cursor-text rounded-md outline-dashed outline-1 outline-teal-300/70 outline-offset-2 hover:outline-teal-500 hover:bg-teal-50/50 transition`}
     >
       {value}
       {status === 'saving' ? (
         <Loader2 className="inline-block w-3.5 h-3.5 ml-1 align-middle animate-spin text-teal-600" />
       ) : status === 'saved' ? (
         <Check className="inline-block w-3.5 h-3.5 ml-1 align-middle text-emerald-600" />
+      ) : status === 'error' ? (
+        <span className="inline-block ml-1 align-middle text-[10px] font-bold text-rose-600">
+          save failed
+        </span>
       ) : (
-        <Pencil className="inline-block w-3 h-3 ml-1 align-middle opacity-0 group-hover/edit:opacity-60 transition" />
+        <Pencil className="inline-block w-3 h-3 ml-1.5 align-middle opacity-40 group-hover/edit:opacity-80 transition" />
       )}
     </Tag>
   );
@@ -160,7 +169,7 @@ export function EditModeBanner() {
   if (!isAdmin) return null;
   return (
     <div className="bg-amber-400 text-amber-950 text-xs font-bold text-center py-1.5 px-4">
-      Edit mode is on — click any highlighted text on the site to change it.
+      Edit mode is on — text with a dashed outline can be clicked to change it.
     </div>
   );
 }
