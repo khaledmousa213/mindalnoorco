@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Mail, MapPin, PhoneCall } from 'lucide-react';
 import { MindAlnoorLogo } from './MindAlnoorLogo';
 import { MindrayLogo } from './MindrayLogo';
+import { EditableText } from './EditableText';
 import { useCategories } from '../hooks/useCatalog';
 import { COMPANY } from '../lib/company';
 
@@ -27,10 +28,13 @@ export const Footer = () => {
               </div>
             </Link>
 
-            <p className="text-slate-400 leading-relaxed max-w-sm">
-              Supplier of diagnostic ultrasound, digital radiography, and surgical imaging systems for
-              hospitals and clinics — with installation, clinical training, and after-sales service.
-            </p>
+            <EditableText
+              as="p"
+              id="footer.description"
+              multiline
+              defaultValue="Supplier of diagnostic ultrasound, digital radiography, and surgical imaging systems for hospitals and clinics — with installation, clinical training, and after-sales service."
+              className="block text-slate-400 leading-relaxed max-w-sm"
+            />
 
             <div className="flex items-center gap-2 text-slate-300">
               <span>Authorized distributor of</span>

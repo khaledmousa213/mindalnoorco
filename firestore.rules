@@ -26,6 +26,12 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    match /siteContent/{id} {
+      // Free-form page copy edited inline from the public site.
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     match /quoteRequests/{id} {
       // Anyone may submit a request, with a sanity-checked shape.
       allow create: if request.resource.data.name is string

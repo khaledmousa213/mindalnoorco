@@ -1,5 +1,6 @@
 import { Mail, MapPin, PhoneCall } from 'lucide-react';
 import { QuoteRequestForm } from '../components/QuoteRequestForm';
+import { EditableText } from '../components/EditableText';
 import { Container } from '../components/ui';
 import { usePageMeta } from '../lib/meta';
 import { COMPANY } from '../lib/company';
@@ -12,11 +13,19 @@ export const ContactPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         <div className="lg:col-span-2 space-y-6">
           <div>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight">Contact us</h1>
-            <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-              Send us a message for pricing, a product demonstration, or service and spare parts.
-              We reply within one business day.
-            </p>
+            <EditableText
+              as="h1"
+              id="contact.title"
+              defaultValue="Contact us"
+              className="block text-3xl font-black text-slate-900 tracking-tight"
+            />
+            <EditableText
+              as="p"
+              id="contact.intro"
+              multiline
+              defaultValue="Send us a message for pricing, a product demonstration, or service and spare parts. We reply within one business day."
+              className="block text-sm text-slate-600 mt-2 leading-relaxed"
+            />
           </div>
 
           <div className="space-y-3">
@@ -77,7 +86,12 @@ export const ContactPage = () => {
 
         <div className="lg:col-span-3">
           <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
-            <h2 className="text-lg font-black text-slate-900 mb-4">Send a message</h2>
+            <EditableText
+              as="h2"
+              id="contact.formTitle"
+              defaultValue="Send a message"
+              className="block text-lg font-black text-slate-900 mb-4"
+            />
             <QuoteRequestForm products={[]} source="contact" />
           </div>
         </div>

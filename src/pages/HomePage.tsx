@@ -3,10 +3,32 @@ import { ArrowRight, ImageOff, PackageSearch, ShieldCheck, Wrench } from 'lucide
 import { useCategories, useProducts } from '../hooks/useCatalog';
 import { buildCategoryTree, getDescendantIds } from '../lib/categories';
 import { ProductCard } from '../components/ProductCard';
+import { EditableText } from '../components/EditableText';
 import { Container, PageLoader } from '../components/ui';
 import { useQuoteModal } from '../components/QuoteModalProvider';
 import { usePageMeta } from '../lib/meta';
 import { COMPANY } from '../lib/company';
+
+const TRUST_ITEMS = [
+  {
+    key: 'warranty',
+    icon: ShieldCheck,
+    title: 'Manufacturer warranty',
+    text: 'Genuine equipment with OEM warranty and software support.',
+  },
+  {
+    key: 'service',
+    icon: Wrench,
+    title: 'Installation & service',
+    text: 'Commissioning, preventive maintenance, and spare parts.',
+  },
+  {
+    key: 'training',
+    icon: PackageSearch,
+    title: 'Clinical training',
+    text: 'On-site application training for your clinical teams.',
+  },
+] as const;
 
 export const HomePage = () => {
   usePageMeta();
@@ -27,19 +49,25 @@ export const HomePage = () => {
         <Container className="py-12 sm:py-16">
           <div className="max-w-3xl space-y-5">
             <span className="inline-flex items-center gap-2 bg-teal-50 text-teal-800 text-xs font-bold px-3.5 py-1 rounded-full border border-teal-200/70">
-              <span className="w-2 h-2 rounded-full bg-lime-500 animate-pulse" />
-              Authorized Mindray distributor · {COMPANY.city}
+              <span className="w-2 h-2 rounded-full bg-lime-500 animate-pulse shrink-0" />
+              <EditableText
+                id="home.hero.badge"
+                defaultValue={`Authorized Mindray distributor · ${COMPANY.city}`}
+              />
             </span>
-            <h1 className="text-3xl sm:text-5xl font-black text-slate-900 leading-tight tracking-tight">
-              Diagnostic imaging equipment for{' '}
-              <span className="bg-gradient-to-r from-sky-600 via-teal-600 to-lime-600 bg-clip-text text-transparent">
-                hospitals and clinics
-              </span>
-            </h1>
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-              Ultrasound systems, digital radiography, and surgical imaging — supplied, installed, and
-              serviced by {COMPANY.name}, with clinical training and manufacturer warranty.
-            </p>
+            <EditableText
+              as="h1"
+              id="home.hero.title"
+              defaultValue="Diagnostic imaging equipment for hospitals and clinics"
+              className="block text-3xl sm:text-5xl font-black text-slate-900 leading-tight tracking-tight"
+            />
+            <EditableText
+              as="p"
+              id="home.hero.subtitle"
+              multiline
+              defaultValue={`Ultrasound systems, digital radiography, and surgical imaging — supplied, installed, and serviced by ${COMPANY.name}, with clinical training and manufacturer warranty.`}
+              className="block text-sm sm:text-base text-slate-600 leading-relaxed"
+            />
             <div className="flex flex-wrap items-center gap-3 pt-1">
               <Link
                 to="/catalog"
@@ -63,18 +91,25 @@ export const HomePage = () => {
       {/* Trust strip */}
       <Container className="py-6">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {[
-            { icon: ShieldCheck, title: 'Manufacturer warranty', text: 'Genuine equipment with OEM warranty and software support.' },
-            { icon: Wrench, title: 'Installation & service', text: 'Commissioning, preventive maintenance, and spare parts.' },
-            { icon: PackageSearch, title: 'Clinical training', text: 'On-site application training for your clinical teams.' },
-          ].map(({ icon: Icon, title, text }) => (
-            <div key={title} className="bg-white border border-slate-200 rounded-2xl p-4 flex gap-3">
+          {TRUST_ITEMS.map(({ key, icon: Icon, title, text }) => (
+            <div key={key} className="bg-white border border-slate-200 rounded-2xl p-4 flex gap-3">
               <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
                 <Icon className="w-4 h-4" />
               </div>
-              <div>
-                <p className="text-xs font-bold text-slate-900">{title}</p>
-                <p className="text-xs text-slate-500 leading-relaxed mt-0.5">{text}</p>
+              <div className="min-w-0">
+                <EditableText
+                  as="p"
+                  id={`home.trust.${key}.title`}
+                  defaultValue={title}
+                  className="block text-xs font-bold text-slate-900"
+                />
+                <EditableText
+                  as="p"
+                  id={`home.trust.${key}.text`}
+                  defaultValue={text}
+                  multiline
+                  className="block text-xs text-slate-500 leading-relaxed mt-0.5"
+                />
               </div>
             </div>
           ))}
@@ -85,8 +120,18 @@ export const HomePage = () => {
       <Container className="py-8 space-y-6">
         <div className="flex items-end justify-between gap-4 border-b border-slate-200 pb-3">
           <div>
-            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Featured systems</h2>
-            <p className="text-xs text-slate-500 mt-1">A selection from our current catalog.</p>
+            <EditableText
+              as="h2"
+              id="home.featured.title"
+              defaultValue="Featured systems"
+              className="block text-2xl font-black text-slate-900 tracking-tight"
+            />
+            <EditableText
+              as="p"
+              id="home.featured.subtitle"
+              defaultValue="A selection from our current catalog."
+              className="block text-xs text-slate-500 mt-1"
+            />
           </div>
           <Link
             to="/catalog"
@@ -114,7 +159,12 @@ export const HomePage = () => {
       {/* Categories */}
       {topCategories.length > 0 && (
         <Container className="py-8 space-y-6">
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Shop by product line</h2>
+          <EditableText
+            as="h2"
+            id="home.categories.title"
+            defaultValue="Shop by product line"
+            className="block text-2xl font-black text-slate-900 tracking-tight"
+          />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {topCategories.map((cat) => {
               const count = products.filter((p) =>
