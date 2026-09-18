@@ -28,6 +28,10 @@ export function uploadDatasheet(file: File): Promise<string> {
   return upload(`products/datasheets/${randomId()}-${safeName(file.name)}`, file);
 }
 
+export function uploadCategoryImage(file: File): Promise<string> {
+  return upload(`categories/images/${randomId()}-${safeName(file.name)}`, file);
+}
+
 /**
  * Delete a file given its download URL. Silently ignores files that are not in
  * our bucket or already gone (e.g. seed data pointing at external URLs).

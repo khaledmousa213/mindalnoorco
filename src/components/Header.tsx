@@ -4,6 +4,7 @@ import { ChevronDown, LayoutGrid, Lock, Menu, ShieldCheck, X } from 'lucide-reac
 import { MindAlnoorLogo } from './MindAlnoorLogo';
 import { MindrayLogo } from './MindrayLogo';
 import { useCategories } from '../hooks/useCatalog';
+import { buildCategoryTree } from '../lib/categories';
 import { useAuth } from '../lib/auth';
 import { useQuoteModal } from './QuoteModalProvider';
 
@@ -22,7 +23,9 @@ export const Header = () => {
 
   const [catOpen, setCatOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const catRef = useRef<HTMLDivElement>(null);
+  const categoryTree = buildCategoryTree(categories);
 
   useEffect(() => {
     setCatOpen(false);
@@ -74,16 +77,30 @@ export const Header = () => {
               <span>Categories</span>
               <ChevronDown className={`w-3.5 h-3.5 transition-transform ${catOpen ? 'rotate-180' : ''}`} />
             </button>
-            {catOpen && categories.length > 0 && (
-              <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-slate-200 p-2 z-50">
-                {categories.map((cat) => (
-                  <Link
-                    key={cat.id}
-                    to={`/catalog?category=${encodeURIComponent(cat.slug)}`}
-                    className="block px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-teal-700 transition"
-                  >
-                    {cat.name}
-                  </Link>
+            {catOpen && categoryTree.length > 0 && (
+              <div className="absolute top-full left-0 mt-2 w-[22rem] bg-white rounded-2xl shadow-xl border border-slate-200 p-2 z-50 max-h-[70vh] overflow-y-auto">
+                {categoryTree.map((top) => (
+                  <div key={top.id} className="py-1">
+                    <Link
+                      to={`/category/${top.slug}`}
+                      className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-900 hover:bg-teal-50 hover:text-teal-700 transition"
+                    >
+                      {top.name}
+                    </Link>
+                    {top.children.length > 0 && (
+                      <div className="pl-3 space-y-0.5">
+                        {top.children.map((child) => (
+                          <Link
+                            key={child.id}
+                            to={`/catalog?category=${encodeURIComponent(child.slug)}`}
+                            className="block px-3 py-1.5 rounded-lg text-[11px] font-semibold text-slate-500 hover:bg-slate-50 hover:text-teal-700 transition"
+                          >
+                            {child.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
             )}
@@ -157,19 +174,46 @@ export const Header = () => {
               {item.label}
             </NavLink>
           ))}
-          {categories.length > 0 && (
+          {categoryTree.length > 0 && (
             <div className="pt-2 mt-1 border-t border-slate-100">
               <span className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Categories
               </span>
-              {categories.map((cat) => (
-                <Link
-                  key={cat.id}
-                  to={`/catalog?category=${encodeURIComponent(cat.slug)}`}
-                  className="block px-3 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50"
-                >
-                  {cat.name}
-                </Link>
+              {categoryTree.map((top) => (
+                <div key={top.id}>
+                  <div className="flex items-center">
+                    <Link
+                      to={`/category/${top.slug}`}
+                      className="flex-1 block px-3 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                    >
+                      {top.name}
+                    </Link>
+                    {top.children.length > 0 && (
+                      <button
+                        onClick={() => setMobileExpanded((v) => (v === top.id ? null : top.id))}
+                        className="p-2 text-slate-400 cursor-pointer"
+                        aria-label="Toggle sub-categories"
+                      >
+                        <ChevronDown
+                          className={`w-4 h-4 transition-transform ${mobileExpanded === top.id ? 'rotate-180' : ''}`}
+                        />
+                      </button>
+                    )}
+                  </div>
+                  {mobileExpanded === top.id && (
+                    <div className="pl-4">
+                      {top.children.map((child) => (
+                        <Link
+                          key={child.id}
+                          to={`/catalog?category=${encodeURIComponent(child.slug)}`}
+                          className="block px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-50"
+                        >
+                          {child.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           )}

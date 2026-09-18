@@ -19,7 +19,7 @@ import {
   isSlugTaken,
   updateProduct,
 } from '../../lib/products';
-import { slugify } from '../../lib/categories';
+import { buildCategoryTree, slugify } from '../../lib/categories';
 import {
   DATASHEET_ACCEPT,
   IMAGE_ACCEPT,
@@ -300,11 +300,23 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
               className={inputClass}
             >
               <option value="">Select a category…</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
+              {buildCategoryTree(categories).map((top) =>
+                top.children.length > 0 ? (
+                  <optgroup key={top.id} label={top.name}>
+                    <option value={top.id}>{top.name} (general)</option>
+                    {top.children.map((child) => (
+                      <option key={child.id} value={child.id}>
+                        {'  '}
+                        {child.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                ) : (
+                  <option key={top.id} value={top.id}>
+                    {top.name}
+                  </option>
+                ),
+              )}
             </select>
             {categories.length === 0 && (
               <span className="text-[11px] text-amber-600">

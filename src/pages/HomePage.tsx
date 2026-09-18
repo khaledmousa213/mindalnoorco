@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, PackageSearch, ShieldCheck, Wrench } from 'lucide-react';
+import { ArrowRight, ImageOff, PackageSearch, ShieldCheck, Wrench } from 'lucide-react';
 import { useCategories, useProducts } from '../hooks/useCatalog';
+import { buildCategoryTree, getDescendantIds } from '../lib/categories';
 import { ProductCard } from '../components/ProductCard';
 import { Container, PageLoader } from '../components/ui';
 import { useQuoteModal } from '../components/QuoteModalProvider';
@@ -12,6 +13,7 @@ export const HomePage = () => {
   const { data: products, loading } = useProducts({ publishedOnly: true });
   const { data: categories } = useCategories();
   const { open: openQuote } = useQuoteModal();
+  const topCategories = buildCategoryTree(categories);
 
   const featured = (() => {
     const marked = products.filter((p) => p.isFeatured);
@@ -110,36 +112,52 @@ export const HomePage = () => {
       </Container>
 
       {/* Categories */}
-      {categories.length > 0 && (
+      {topCategories.length > 0 && (
         <Container className="py-8 space-y-6">
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Browse by category</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {categories.map((cat) => {
-              const count = products.filter((p) => p.categoryId === cat.id).length;
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Shop by product line</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {topCategories.map((cat) => {
+              const count = products.filter((p) =>
+                getDescendantIds(categories, cat.id).includes(p.categoryId),
+              ).length;
               return (
                 <Link
                   key={cat.id}
-                  to={`/catalog?category=${encodeURIComponent(cat.slug)}`}
-                  className="group bg-white border border-slate-200 hover:border-teal-400 rounded-2xl p-5 transition shadow-xs hover:shadow-md flex flex-col justify-between"
+                  to={`/category/${cat.slug}`}
+                  className="group bg-white border border-slate-200 hover:border-teal-400 rounded-3xl overflow-hidden shadow-xs hover:shadow-md transition flex flex-col"
                 >
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-black text-slate-900 group-hover:text-teal-700 transition">
-                        {cat.name}
-                      </h3>
-                      <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
-                        {count}
-                      </span>
-                    </div>
-                    {cat.description && (
-                      <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
-                        {cat.description}
-                      </p>
+                  <div className="h-44 bg-slate-100 overflow-hidden flex items-center justify-center">
+                    {cat.imageUrl ? (
+                      <img
+                        src={cat.imageUrl}
+                        alt={cat.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <ImageOff className="w-8 h-8 text-slate-300" />
                     )}
                   </div>
-                  <span className="text-xs font-bold text-teal-700 mt-4 flex items-center gap-1">
-                    View products <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition" />
-                  </span>
+                  <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-black text-slate-900 group-hover:text-teal-700 transition">
+                          {cat.name}
+                        </h3>
+                        <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                          {count}
+                        </span>
+                      </div>
+                      {cat.description && (
+                        <p className="text-xs text-slate-500 leading-relaxed line-clamp-2 mt-1">
+                          {cat.description}
+                        </p>
+                      )}
+                    </div>
+                    <span className="text-xs font-bold text-teal-700 flex items-center gap-1">
+                      {cat.children.length > 0 ? 'Browse series' : 'View products'}
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition" />
+                    </span>
+                  </div>
                 </Link>
               );
             })}

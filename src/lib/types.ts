@@ -49,9 +49,18 @@ export interface Category {
   slug: string;
   description: string;
   order: number;
+  /** Parent category id for a sub-category, or '' for a top-level category. */
+  parentId: string;
+  /** Storage download URL shown on category/sub-category cards. Optional. */
+  imageUrl: string;
 }
 
 export type CategoryDraft = Omit<Category, 'id'>;
+
+/** A top-level category with its sub-categories attached, for tree-shaped UI. */
+export interface CategoryNode extends Category {
+  children: Category[];
+}
 
 export type QuoteStatus = 'new' | 'contacted' | 'closed';
 

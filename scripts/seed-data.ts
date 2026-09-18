@@ -8,7 +8,22 @@
  */
 import type { CategoryDraft, ProductDraft } from '../src/lib/types';
 
+/**
+ * Two-level hierarchy: a handful of top-level product lines, each with a few
+ * sub-categories ("series"), mirroring how manufacturers like Mindray group
+ * their catalog (e.g. mindray.com/en/products/ultrasound). parentId is '' for
+ * a top-level category and the parent's `key` for a sub-category.
+ */
 export const SEED_CATEGORIES: (CategoryDraft & { key: string })[] = [
+  {
+    key: 'ultrasound-systems',
+    name: 'Ultrasound Systems',
+    slug: 'ultrasound-systems',
+    description: 'Diagnostic ultrasound for radiology, cardiology, OB/GYN, and point-of-care use.',
+    order: 0,
+    parentId: '',
+    imageUrl: '',
+  },
   {
     key: 'console-ultrasound',
     name: 'Console Ultrasound',
@@ -16,6 +31,8 @@ export const SEED_CATEGORIES: (CategoryDraft & { key: string })[] = [
     description:
       'Cart-based ultrasound systems for radiology, OB/GYN, and cardiovascular imaging.',
     order: 0,
+    parentId: 'ultrasound-systems',
+    imageUrl: '',
   },
   {
     key: 'portable-ultrasound',
@@ -23,27 +40,44 @@ export const SEED_CATEGORIES: (CategoryDraft & { key: string })[] = [
     slug: 'portable-ultrasound',
     description: 'Laptop-style and handheld ultrasound for emergency, ICU, and bedside use.',
     order: 1,
+    parentId: 'ultrasound-systems',
+    imageUrl: '',
+  },
+  {
+    key: 'radiography',
+    name: 'Radiography',
+    slug: 'radiography',
+    description: 'Digital X-ray rooms and mobile bedside radiography systems.',
+    order: 1,
+    parentId: '',
+    imageUrl: '',
   },
   {
     key: 'digital-radiography',
     name: 'Digital Radiography (DR)',
     slug: 'digital-radiography',
     description: 'Floor-mounted and ceiling-suspended digital X-ray rooms and flat-panel detectors.',
-    order: 2,
+    order: 0,
+    parentId: 'radiography',
+    imageUrl: '',
   },
   {
     key: 'mobile-xray',
     name: 'Mobile X-Ray',
     slug: 'mobile-xray',
     description: 'Motorized bedside digital radiography units for wards, ICU, and isolation rooms.',
-    order: 3,
+    order: 1,
+    parentId: 'radiography',
+    imageUrl: '',
   },
   {
     key: 'surgical-c-arm',
     name: 'Surgical C-Arm',
     slug: 'surgical-c-arm',
     description: 'Mobile flat-panel fluoroscopy for orthopedic, vascular, and spinal surgery.',
-    order: 4,
+    order: 2,
+    parentId: '',
+    imageUrl: '',
   },
 ];
 

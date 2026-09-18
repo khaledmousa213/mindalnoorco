@@ -1,16 +1,17 @@
 import {
   addDoc,
   collection,
-  deleteDoc,
   doc,
   getDocs,
   onSnapshot,
   orderBy,
   query,
   updateDoc,
+  where,
+  writeBatch,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import type { Category, CategoryDraft } from './types';
+import type { Category, CategoryDraft, CategoryNode } from './types';
 
 const COLLECTION = 'categories';
 const categoriesRef = collection(db, COLLECTION);
@@ -22,6 +23,8 @@ function fromDoc(id: string, data: Record<string, unknown>): Category {
     slug: (data.slug as string) ?? id,
     description: (data.description as string) ?? '',
     order: typeof data.order === 'number' ? (data.order as number) : 0,
+    parentId: (data.parentId as string) ?? '',
+    imageUrl: (data.imageUrl as string) ?? '',
   };
 }
 
@@ -55,8 +58,16 @@ export async function updateCategory(
   await updateDoc(doc(db, COLLECTION, id), patch);
 }
 
+/**
+ * Deletes a category. Any direct sub-categories are promoted to top-level
+ * (parentId cleared) rather than left pointing at a deleted parent.
+ */
 export async function deleteCategory(id: string): Promise<void> {
-  await deleteDoc(doc(db, COLLECTION, id));
+  const children = await getDocs(query(categoriesRef, where('parentId', '==', id)));
+  const batch = writeBatch(db);
+  children.forEach((child) => batch.update(child.ref, { parentId: '' }));
+  batch.delete(doc(db, COLLECTION, id));
+  await batch.commit();
 }
 
 export function slugify(text: string): string {
@@ -66,4 +77,36 @@ export function slugify(text: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 60);
+}
+
+/** Groups a flat category list into top-level nodes with their children attached. */
+export function buildCategoryTree(categories: Category[]): CategoryNode[] {
+  const byParent = new Map<string, Category[]>();
+  for (const cat of categories) {
+    const key = cat.parentId || '';
+    if (!byParent.has(key)) byParent.set(key, []);
+    byParent.get(key)!.push(cat);
+  }
+  const topLevel = byParent.get('') ?? [];
+  return topLevel.map((cat) => ({ ...cat, children: byParent.get(cat.id) ?? [] }));
+}
+
+/** Returns the given category id plus every descendant id (children, grandchildren, ...). */
+export function getDescendantIds(categories: Category[], categoryId: string): string[] {
+  const result = [categoryId];
+  const stack = [categoryId];
+  while (stack.length) {
+    const current = stack.pop()!;
+    for (const cat of categories) {
+      if (cat.parentId === current) {
+        result.push(cat.id);
+        stack.push(cat.id);
+      }
+    }
+  }
+  return result;
+}
+
+export function findBySlug(categories: Category[], slug: string): Category | undefined {
+  return categories.find((c) => c.slug === slug);
 }
