@@ -3,11 +3,17 @@ import { Mail, MapPin, PhoneCall } from 'lucide-react';
 import { MindAlnoorLogo } from './MindAlnoorLogo';
 import { MindrayLogo } from './MindrayLogo';
 import { EditableText } from './EditableText';
+import { NavLinkEditor } from './NavLinkEditor';
 import { useCategories } from '../hooks/useCatalog';
+import { useSiteNav } from '../hooks/useSiteNav';
+import { useAuth } from '../lib/auth';
 import { COMPANY } from '../lib/company';
+import { setSiteNavList } from '../lib/siteNav';
 
 export const Footer = () => {
   const { data: categories } = useCategories();
+  const { isAdmin } = useAuth();
+  const nav = useSiteNav();
 
   return (
     <footer className="bg-slate-950 text-slate-400 border-t border-slate-800 text-xs">
@@ -80,23 +86,23 @@ export const Footer = () => {
 
           <div className="space-y-3">
             <h4 className="text-white font-bold uppercase tracking-wider">Company</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/about" className="hover:text-teal-400 transition">
-                  About Mind Alnoor
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="hover:text-teal-400 transition">
-                  Contact &amp; quote requests
-                </Link>
-              </li>
-              <li>
-                <Link to="/admin/login" className="hover:text-teal-400 transition">
-                  Staff sign in
-                </Link>
-              </li>
-            </ul>
+            {isAdmin ? (
+              <NavLinkEditor
+                dark
+                items={nav.footerCompany}
+                onChange={(items) => void setSiteNavList('footerCompany', items)}
+              />
+            ) : (
+              <ul className="space-y-2">
+                {nav.footerCompany.map((item) => (
+                  <li key={item.id}>
+                    <Link to={item.path} className="hover:text-teal-400 transition">
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
 

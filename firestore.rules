@@ -32,6 +32,18 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /pageBlocks/{id} {
+      // Ordered sections that make up each page (home, about, contact, category:*).
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /siteNav/{id} {
+      // Header menu and footer link lists.
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     match /quoteRequests/{id} {
       // Anyone may submit a request, with a sanity-checked shape.
       allow create: if request.resource.data.name is string
