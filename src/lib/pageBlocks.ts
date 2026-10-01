@@ -17,13 +17,17 @@ import type { Block, BlockType, DefaultBlockInput } from '../components/blocks/t
 const COLLECTION = 'pageBlocks';
 const blocksRef = collection(db, COLLECTION);
 
+/** Bump when the block/element shape changes incompatibly; older docs get reseeded. */
+export const BLOCK_VERSION = 2;
+
 function fromDoc(id: string, data: Record<string, unknown>): Block {
   return {
     id,
     pageId: (data.pageId as string) ?? '',
-    type: (data.type as BlockType) ?? 'richText',
+    type: (data.type as BlockType) ?? 'section',
     order: typeof data.order === 'number' ? (data.order as number) : 0,
     props: (data.props as Record<string, unknown>) ?? {},
+    v: typeof data.v === 'number' ? (data.v as number) : undefined,
   };
 }
 
@@ -47,7 +51,15 @@ export async function createBlock(
   order: number,
 ): Promise<string> {
   const now = Date.now();
-  const ref = await addDoc(blocksRef, { pageId, type, props, order, createdAt: now, updatedAt: now });
+  const ref = await addDoc(blocksRef, {
+    pageId,
+    type,
+    props,
+    order,
+    v: BLOCK_VERSION,
+    createdAt: now,
+    updatedAt: now,
+  });
   return ref.id;
 }
 
@@ -70,21 +82,23 @@ export async function reorderBlocks(orderedIds: string[]): Promise<void> {
 }
 
 /**
- * Writes the default layout for a page the first time it has no stored blocks,
- * so there is real state to edit/reorder. No-op if the page already has blocks.
+ * Replaces everything stored for a page with the given defaults. Seeded docs
+ * get deterministic ids so a double call (React StrictMode, two tabs) writes
+ * the same docs twice instead of duplicating the layout.
  */
-export async function seedIfEmpty(pageId: string, defaults: DefaultBlockInput[]): Promise<void> {
-  if (defaults.length === 0) return;
+export async function resetPageBlocks(pageId: string, defaults: DefaultBlockInput[]): Promise<void> {
   const existing = await getDocs(query(blocksRef, where('pageId', '==', pageId)));
-  if (!existing.empty) return;
   const now = Date.now();
+  const slug = pageId.replace(/[^a-zA-Z0-9]/g, '_');
   const batch = writeBatch(db);
+  existing.forEach((d) => batch.delete(d.ref));
   defaults.forEach((def, index) => {
-    batch.set(doc(blocksRef), {
+    batch.set(doc(blocksRef, `${slug}_${index}`), {
       pageId,
       type: def.type,
       props: def.props,
       order: index,
+      v: BLOCK_VERSION,
       createdAt: now,
       updatedAt: now,
     });

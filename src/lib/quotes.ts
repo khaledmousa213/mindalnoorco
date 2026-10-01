@@ -22,6 +22,7 @@ function fromDoc(id: string, data: Record<string, unknown>): QuoteRequest {
     email: (data.email as string) ?? '',
     phone: (data.phone as string) ?? '',
     organization: (data.organization as string) ?? '',
+    location: (data.location as string) ?? '',
     message: (data.message as string) ?? '',
     products: (data.products as QuoteRequest['products']) ?? [],
     source: (data.source as string) ?? '',

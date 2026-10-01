@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -30,7 +30,7 @@ import {
   uploadProductImage,
 } from '../../lib/storage';
 import { PageLoader } from '../../components/ui';
-import type { ProductDraft, ProductSpecRow } from '../../lib/types';
+import type { ProductDraft, ProductProbe, ProductSpecRow } from '../../lib/types';
 
 const EMPTY: ProductDraft = {
   slug: '',
@@ -45,6 +45,8 @@ const EMPTY: ProductDraft = {
   specs: [],
   priceRange: '',
   datasheetUrl: '',
+  photos: [],
+  probes: [],
   isFeatured: false,
   isPublished: true,
   order: 0,
@@ -60,6 +62,9 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
   const { data: categories } = useCategories();
 
   const [form, setForm] = useState<ProductDraft>(EMPTY);
+  // Features and specs are edited as plain text (one per line) and parsed on save.
+  const [featuresText, setFeaturesText] = useState('');
+  const [specsText, setSpecsText] = useState('');
   const [slugEdited, setSlugEdited] = useState(mode === 'edit');
   const [loading, setLoading] = useState(mode === 'edit');
   const [saving, setSaving] = useState(false);
@@ -67,6 +72,7 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
   const [error, setError] = useState('');
 
   const imageInput = useRef<HTMLInputElement>(null);
+  const photoInput = useRef<HTMLInputElement>(null);
   const pdfInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -90,10 +96,14 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
           specs: p.specs,
           priceRange: p.priceRange,
           datasheetUrl: p.datasheetUrl,
+          photos: p.photos,
+          probes: p.probes,
           isFeatured: p.isFeatured,
           isPublished: p.isPublished,
           order: p.order,
         });
+        setFeaturesText(p.keyFeatures.join('\n'));
+        setSpecsText(specsToText(p.specs));
       })
       .finally(() => setLoading(false));
   }, [mode, id]);
@@ -114,7 +124,14 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
     setForm((f) => ({ ...f, categoryId, categoryName: cat?.name ?? '' }));
   };
 
-  const handleImageFiles = async (files: FileList | null) => {
+  const handleImageFiles = (files: FileList | null) => uploadImagesInto('images', files, imageInput.current);
+  const handlePhotoFiles = (files: FileList | null) => uploadImagesInto('photos', files, photoInput.current);
+
+  const uploadImagesInto = async (
+    key: 'images' | 'photos',
+    files: FileList | null,
+    input: HTMLInputElement | null,
+  ) => {
     if (!files?.length) return;
     setUploading(true);
     setError('');
@@ -127,12 +144,34 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
         }
         uploaded.push(await uploadProductImage(file));
       }
-      setForm((f) => ({ ...f, images: [...f.images, ...uploaded] }));
+      setForm((f) => ({ ...f, [key]: [...f[key], ...uploaded] }));
     } catch {
       setError('Image upload failed. Check your connection and Storage rules, then try again.');
     } finally {
       setUploading(false);
-      if (imageInput.current) imageInput.current.value = '';
+      if (input) input.value = '';
+    }
+  };
+
+  const removePhoto = (url: string) => {
+    setForm((f) => ({ ...f, photos: f.photos.filter((i) => i !== url) }));
+    void deleteStorageFile(url);
+  };
+
+  const uploadProbeImage = async (file: File): Promise<string | null> => {
+    if (file.size > MAX_IMAGE_BYTES) {
+      setError(`"${file.name}" is larger than 8 MB.`);
+      return null;
+    }
+    setUploading(true);
+    setError('');
+    try {
+      return await uploadProductImage(file);
+    } catch {
+      setError('Image upload failed. Check your connection and try again.');
+      return null;
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -154,7 +193,7 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
   const handlePdf = async (file: File | undefined) => {
     if (!file) return;
     if (file.size > MAX_DATASHEET_BYTES) {
-      setError('The datasheet must be 20 MB or smaller.');
+      setError('The catalog PDF must be 20 MB or smaller.');
       return;
     }
     setUploading(true);
@@ -164,7 +203,7 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
       if (form.datasheetUrl) void deleteStorageFile(form.datasheetUrl);
       set('datasheetUrl', url);
     } catch {
-      setError('Datasheet upload failed. Please try again.');
+      setError('Catalog upload failed. Please try again.');
     } finally {
       setUploading(false);
       if (pdfInput.current) pdfInput.current.value = '';
@@ -198,10 +237,11 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
         slug,
         name: form.name.trim(),
         brand: form.brand.trim(),
-        keyFeatures: form.keyFeatures.map((s) => s.trim()).filter(Boolean),
-        specs: form.specs
-          .map((r) => ({ label: r.label.trim(), value: r.value.trim() }))
-          .filter((r) => r.label || r.value),
+        keyFeatures: featuresText.split('\n').map((s) => s.trim()).filter(Boolean),
+        specs: textToSpecs(specsText),
+        probes: form.probes
+          .map((pr) => ({ ...pr, name: pr.name.trim(), description: pr.description.trim() }))
+          .filter((pr) => pr.name || pr.image),
       };
 
       if (mode === 'create') {
@@ -454,9 +494,61 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
         )}
       </section>
 
-      {/* Datasheet */}
+      {/* Real photos */}
       <section className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
-        <span className={labelClass}>Datasheet (PDF)</span>
+        <div className="flex items-center justify-between">
+          <div>
+            <span className={labelClass}>Real photos</span>
+            <p className="text-[11px] text-slate-400">
+              Photos of the system installed or in use. Shown in their own section on the product page.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => photoInput.current?.click()}
+            disabled={uploading}
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-700 hover:text-teal-900 disabled:opacity-50 cursor-pointer"
+          >
+            {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+            Upload
+          </button>
+          <input
+            ref={photoInput}
+            type="file"
+            accept={IMAGE_ACCEPT}
+            multiple
+            hidden
+            onChange={(e) => handlePhotoFiles(e.target.files)}
+          />
+        </div>
+        {form.photos.length === 0 ? (
+          <p className="text-xs text-slate-400">None added.</p>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {form.photos.map((url) => (
+              <div key={url} className="relative rounded-xl overflow-hidden border border-slate-200 bg-slate-100">
+                <img src={url} alt="" className="w-full h-24 object-cover" />
+                <button
+                  type="button"
+                  onClick={() => removePhoto(url)}
+                  className="absolute top-1 right-1 bg-white/90 hover:bg-white text-rose-600 rounded-full p-0.5 shadow cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Catalog PDF */}
+      <section className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
+        <div>
+          <span className={labelClass}>Catalog (PDF)</span>
+          <p className="text-[11px] text-slate-400">
+            Shown as a “Catalog” button under the product details. PDF only, up to 20 MB.
+          </p>
+        </div>
         {form.datasheetUrl ? (
           <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
             <a
@@ -499,27 +591,44 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
       </section>
 
       {/* Key features */}
-      <RepeatableList
-        title="Key features"
-        addLabel="Add feature"
-        rows={form.keyFeatures}
-        onChange={(rows) => set('keyFeatures', rows)}
-        render={(value, onChange) => (
-          <input
-            type="text"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder="e.g. 21.5-inch HD touchscreen"
-            className={inputClass}
-          />
-        )}
-        empty=""
-      />
+      <section className="bg-white border border-slate-200 rounded-2xl p-5 space-y-2">
+        <div>
+          <span className={labelClass}>Key features</span>
+          <p className="text-[11px] text-slate-400">One feature per line. Each line is shown with a ✓ next to the picture.</p>
+        </div>
+        <textarea
+          rows={6}
+          value={featuresText}
+          onChange={(e) => setFeaturesText(e.target.value)}
+          placeholder={'21.5-inch HD touchscreen\nAI-assisted measurements\nFull-featured cardiac package'}
+          className={`${inputClass} leading-relaxed`}
+        />
+      </section>
 
       {/* Specs */}
-      <SpecEditor
-        rows={form.specs}
-        onChange={(rows) => set('specs', rows)}
+      <section className="bg-white border border-slate-200 rounded-2xl p-5 space-y-2">
+        <div>
+          <span className={labelClass}>Specifications</span>
+          <p className="text-[11px] text-slate-400">
+            One per line. Write “Name: value” to show it as a table row (e.g. “Monitor: 21.5-inch LED”); a line
+            without a colon is shown as plain text.
+          </p>
+        </div>
+        <textarea
+          rows={10}
+          value={specsText}
+          onChange={(e) => setSpecsText(e.target.value)}
+          placeholder={'Monitor: 21.5-inch HD LED\nTouch screen: 13.3-inch\nTransducer ports: 4 active\nWeight: approx. 95 kg'}
+          className={`${inputClass} font-mono text-[13px] leading-relaxed`}
+        />
+      </section>
+
+      {/* Probes */}
+      <ProbeEditor
+        probes={form.probes}
+        onChange={(probes) => set('probes', probes)}
+        upload={uploadProbeImage}
+        uploading={uploading}
       />
 
       {/* Actions */}
@@ -543,104 +652,117 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
   );
 };
 
-function RepeatableList({
-  title,
-  addLabel,
-  rows,
+/** "Label: value" per line; a line without a colon becomes a full-width text row. */
+function specsToText(rows: ProductSpecRow[]): string {
+  return rows.map((r) => (r.label ? `${r.label}: ${r.value}` : r.value)).join('\n');
+}
+
+function textToSpecs(text: string): ProductSpecRow[] {
+  return text
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const colon = line.indexOf(':');
+      // Only treat a short prefix as a label, so "https://..." or prose with a colon stays plain text.
+      if (colon > 0 && colon <= 40 && !line.slice(0, colon).includes('//')) {
+        return { label: line.slice(0, colon).trim(), value: line.slice(colon + 1).trim() };
+      }
+      return { label: '', value: line };
+    });
+}
+
+function ProbeEditor({
+  probes,
   onChange,
-  render,
-  empty,
+  upload,
+  uploading,
 }: {
-  title: string;
-  addLabel: string;
-  rows: string[];
-  onChange: (rows: string[]) => void;
-  render: (value: string, onChange: (v: string) => void) => ReactNode;
-  empty: string;
+  probes: ProductProbe[];
+  onChange: (probes: ProductProbe[]) => void;
+  upload: (file: File) => Promise<string | null>;
+  uploading: boolean;
 }) {
+  const update = (id: string, patch: Partial<ProductProbe>) =>
+    onChange(probes.map((p) => (p.id === id ? { ...p, ...patch } : p)));
+
   return (
     <section className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
       <div className="flex items-center justify-between">
-        <span className={labelClass}>{title}</span>
+        <div>
+          <span className={labelClass}>Probes</span>
+          <p className="text-[11px] text-slate-400">
+            For ultrasound systems. A name is enough — the picture and description are optional.
+          </p>
+        </div>
         <button
           type="button"
-          onClick={() => onChange([...rows, empty])}
+          onClick={() =>
+            onChange([...probes, { id: Math.random().toString(36).slice(2, 10), name: '', description: '', image: '' }])
+          }
           className="inline-flex items-center gap-1 text-xs font-bold text-teal-700 hover:text-teal-900 cursor-pointer"
         >
-          <Plus className="w-3.5 h-3.5" /> {addLabel}
+          <Plus className="w-3.5 h-3.5" /> Add probe
         </button>
       </div>
-      {rows.length === 0 && <p className="text-xs text-slate-400">None added.</p>}
-      <div className="space-y-2">
-        {rows.map((row, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <div className="flex-1">
-              {render(row, (v) => {
-                const next = rows.slice();
-                next[index] = v;
-                onChange(next);
-              })}
+      {probes.length === 0 && <p className="text-xs text-slate-400">None added.</p>}
+      <div className="space-y-3">
+        {probes.map((probe) => (
+          <div key={probe.id} className="flex gap-3 border border-slate-200 rounded-xl p-3">
+            <label
+              className={`relative w-24 h-24 shrink-0 rounded-lg overflow-hidden border border-dashed border-slate-300 bg-slate-50 flex items-center justify-center text-slate-400 hover:border-teal-400 hover:text-teal-600 transition ${
+                uploading ? 'opacity-60' : 'cursor-pointer'
+              }`}
+              title={probe.image ? 'Change picture' : 'Upload picture'}
+            >
+              {probe.image ? (
+                <img src={probe.image} alt="" className="w-full h-full object-contain bg-white" />
+              ) : (
+                <span className="flex flex-col items-center gap-1 text-[10px] font-semibold text-center leading-tight">
+                  <Upload className="w-4 h-4" /> Picture
+                  <span className="font-normal">(optional)</span>
+                </span>
+              )}
+              <input
+                type="file"
+                accept={IMAGE_ACCEPT}
+                hidden
+                disabled={uploading}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  e.target.value = '';
+                  if (!file) return;
+                  const url = await upload(file);
+                  if (!url) return;
+                  if (probe.image) void deleteStorageFile(probe.image);
+                  update(probe.id, { image: url });
+                }}
+              />
+            </label>
+            <div className="flex-1 space-y-2 min-w-0">
+              <input
+                type="text"
+                value={probe.name}
+                onChange={(e) => update(probe.id, { name: e.target.value })}
+                placeholder="Probe name, e.g. SC6-1U Convex"
+                className={inputClass}
+              />
+              <textarea
+                rows={2}
+                value={probe.description}
+                onChange={(e) => update(probe.id, { description: e.target.value })}
+                placeholder="Short description (optional), e.g. Abdominal, OB/GYN · 1–6 MHz"
+                className={inputClass}
+              />
             </div>
             <button
               type="button"
-              onClick={() => onChange(rows.filter((_, i) => i !== index))}
-              className="p-1.5 text-slate-400 hover:text-rose-600 cursor-pointer"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function SpecEditor({
-  rows,
-  onChange,
-}: {
-  rows: ProductSpecRow[];
-  onChange: (rows: ProductSpecRow[]) => void;
-}) {
-  const update = (index: number, patch: Partial<ProductSpecRow>) => {
-    const next = rows.slice();
-    next[index] = { ...next[index], ...patch };
-    onChange(next);
-  };
-  return (
-    <section className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
-      <div className="flex items-center justify-between">
-        <span className={labelClass}>Specifications</span>
-        <button
-          type="button"
-          onClick={() => onChange([...rows, { label: '', value: '' }])}
-          className="inline-flex items-center gap-1 text-xs font-bold text-teal-700 hover:text-teal-900 cursor-pointer"
-        >
-          <Plus className="w-3.5 h-3.5" /> Add row
-        </button>
-      </div>
-      {rows.length === 0 && <p className="text-xs text-slate-400">None added.</p>}
-      <div className="space-y-2">
-        {rows.map((row, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <input
-              type="text"
-              value={row.label}
-              onChange={(e) => update(index, { label: e.target.value })}
-              placeholder="Label"
-              className={`${inputClass} sm:w-1/3`}
-            />
-            <input
-              type="text"
-              value={row.value}
-              onChange={(e) => update(index, { value: e.target.value })}
-              placeholder="Value"
-              className={`${inputClass} flex-1`}
-            />
-            <button
-              type="button"
-              onClick={() => onChange(rows.filter((_, i) => i !== index))}
-              className="p-1.5 text-slate-400 hover:text-rose-600 cursor-pointer"
+              onClick={() => {
+                if (probe.image) void deleteStorageFile(probe.image);
+                onChange(probes.filter((p) => p.id !== probe.id));
+              }}
+              className="self-start p-1.5 text-slate-400 hover:text-rose-600 cursor-pointer"
+              title="Remove probe"
             >
               <Trash2 className="w-4 h-4" />
             </button>

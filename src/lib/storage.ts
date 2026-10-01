@@ -36,6 +36,10 @@ export function uploadContentImage(file: File): Promise<string> {
   return upload(`content/images/${randomId()}-${safeName(file.name)}`, file);
 }
 
+export function uploadContentVideo(file: File): Promise<string> {
+  return upload(`content/videos/${randomId()}-${safeName(file.name)}`, file);
+}
+
 /**
  * Delete a file given its download URL. Silently ignores files that are not in
  * our bucket or already gone (e.g. seed data pointing at external URLs).
@@ -52,4 +56,6 @@ export async function deleteStorageFile(downloadUrl: string): Promise<void> {
 export const IMAGE_ACCEPT = 'image/png,image/jpeg,image/webp,image/avif';
 export const DATASHEET_ACCEPT = 'application/pdf';
 export const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+export const VIDEO_ACCEPT = 'video/mp4,video/webm';
+export const MAX_VIDEO_BYTES = 60 * 1024 * 1024;
 export const MAX_DATASHEET_BYTES = 20 * 1024 * 1024;

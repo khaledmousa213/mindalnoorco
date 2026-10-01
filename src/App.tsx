@@ -10,7 +10,7 @@ import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { QuoteModalProvider } from './components/QuoteModalProvider';
-import { EditModeBanner, SiteContentProvider } from './components/EditableText';
+import { SiteContentProvider } from './components/SiteText';
 import { PageLoader } from './components/ui';
 import { useAuth } from './lib/auth';
 
@@ -55,7 +55,6 @@ export default function App() {
       <QuoteModalProvider>
         <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans selection:bg-teal-600 selection:text-white">
           <ScrollToTop />
-          {!isAdminArea && <EditModeBanner />}
           <Header />
           <main className="flex-1 flex flex-col">
             <Suspense fallback={<PageLoader />}>

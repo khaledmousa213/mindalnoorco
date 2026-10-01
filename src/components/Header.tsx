@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ChevronDown, LayoutGrid, Lock, Menu, Pencil, ShieldCheck, X } from 'lucide-react';
+import { ChevronDown, LayoutGrid, Lock, Menu, ShieldCheck, X } from 'lucide-react';
 import { MindAlnoorLogo } from './MindAlnoorLogo';
 import { MindrayLogo } from './MindrayLogo';
-import { NavLinkEditor } from './NavLinkEditor';
 import { useCategories } from '../hooks/useCatalog';
 import { useSiteNav } from '../hooks/useSiteNav';
 import { buildCategoryTree } from '../lib/categories';
-import { setSiteNavList } from '../lib/siteNav';
 import { useAuth } from '../lib/auth';
 import { useQuoteModal } from './QuoteModalProvider';
 
@@ -28,9 +26,7 @@ export const Header = () => {
   const [catOpen, setCatOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
-  const [navEditorOpen, setNavEditorOpen] = useState(false);
   const catRef = useRef<HTMLDivElement>(null);
-  const navEditorRef = useRef<HTMLDivElement>(null);
   const categoryTree = buildCategoryTree(categories);
 
   useEffect(() => {
@@ -41,9 +37,6 @@ export const Header = () => {
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (catRef.current && !catRef.current.contains(e.target as Node)) setCatOpen(false);
-      if (navEditorRef.current && !navEditorRef.current.contains(e.target as Node)) {
-        setNavEditorOpen(false);
-      }
     };
     document.addEventListener('mousedown', onClick);
     return () => document.removeEventListener('mousedown', onClick);
@@ -114,29 +107,6 @@ export const Header = () => {
             )}
           </div>
 
-          {isAdmin && (
-            <div className="relative" ref={navEditorRef}>
-              <button
-                onClick={() => setNavEditorOpen((v) => !v)}
-                className="p-1.5 rounded-full text-slate-400 hover:text-teal-700 hover:bg-teal-50/70 transition cursor-pointer"
-                title="Edit menu links"
-                aria-label="Edit menu links"
-              >
-                <Pencil className="w-3.5 h-3.5" />
-              </button>
-              {navEditorOpen && (
-                <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-slate-200 p-3 z-50">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-                    Menu links — drag to reorder
-                  </p>
-                  <NavLinkEditor
-                    items={nav.header}
-                    onChange={(items) => void setSiteNavList('header', items)}
-                  />
-                </div>
-              )}
-            </div>
-          )}
         </nav>
 
         {/* Right actions */}

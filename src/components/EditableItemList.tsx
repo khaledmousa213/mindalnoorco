@@ -35,6 +35,8 @@ interface EditableItemListProps<T extends WithId> {
   itemClassName?: string;
   addLabel?: string;
   minItems?: number;
+  /** Position of the drag/remove chip on each item. */
+  chromeClassName?: string;
 }
 
 /**
@@ -53,6 +55,7 @@ export function EditableItemList<T extends WithId>({
   itemClassName = '',
   addLabel = 'Add item',
   minItems = 0,
+  chromeClassName = 'top-1.5 right-1.5',
 }: EditableItemListProps<T>) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
 
@@ -94,6 +97,7 @@ export function EditableItemList<T extends WithId>({
               key={item.id}
               id={item.id}
               className={itemClassName}
+              chromeClassName={chromeClassName}
               removable={removable}
               onRemove={() => onChange(items.filter((i) => i.id !== item.id))}
             >
@@ -117,12 +121,14 @@ function SortableEntry({
   id,
   children,
   className,
+  chromeClassName,
   removable,
   onRemove,
 }: {
   id: string;
   children: ReactNode;
   className?: string;
+  chromeClassName: string;
   removable: boolean;
   onRemove: () => void;
 }) {
@@ -135,7 +141,9 @@ function SortableEntry({
 
   return (
     <div ref={setNodeRef} style={style} className={`relative group/item ${className ?? ''}`}>
-      <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-0.5 opacity-0 group-hover/item:opacity-100 focus-within:opacity-100 transition">
+      <div
+        className={`absolute ${chromeClassName} z-10 flex items-center gap-0.5 opacity-0 group-hover/item:opacity-100 focus-within:opacity-100 transition`}
+      >
         <button
           type="button"
           {...attributes}

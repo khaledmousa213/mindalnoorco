@@ -22,6 +22,7 @@ interface QuotePayload {
   email?: string;
   phone?: string;
   organization?: string;
+  location?: string;
   message?: string;
   source?: string;
   products?: { id: string; name: string }[];
@@ -78,6 +79,7 @@ export async function handleQuoteNotify(
     ['Email', payload.email ?? ''],
     ['Phone', payload.phone ?? ''],
     ['Organization', payload.organization ?? ''],
+    ['City / country', payload.location ?? ''],
     ['Products', products],
     ['Source', payload.source ?? ''],
     ['Message', payload.message ?? ''],
@@ -106,7 +108,7 @@ export async function handleQuoteNotify(
       body: JSON.stringify({
         from: env.QUOTE_NOTIFY_FROM,
         to: [env.QUOTE_NOTIFY_TO],
-        reply_to: payload.email,
+        ...(payload.email ? { reply_to: payload.email } : {}),
         subject: `Quote request from ${payload.name}${
           payload.organization ? ` (${payload.organization})` : ''
         }`,

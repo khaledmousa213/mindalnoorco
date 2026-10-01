@@ -35,6 +35,8 @@ export const AdminProductList = () => {
       await Promise.all([
         ...p.images.map(deleteStorageFile),
         p.datasheetUrl ? deleteStorageFile(p.datasheetUrl) : Promise.resolve(),
+        ...p.photos.map((url) => deleteStorageFile(url)),
+        ...p.probes.filter((probe) => probe.image).map((probe) => deleteStorageFile(probe.image)),
       ]);
     } finally {
       setBusy(false);

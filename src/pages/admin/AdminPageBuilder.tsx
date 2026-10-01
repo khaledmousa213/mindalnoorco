@@ -19,8 +19,7 @@ export const AdminPageBuilder = () => {
     <div className="space-y-8">
       <p className="text-sm text-slate-500 max-w-2xl">
         Pick a page to rearrange its sections by drag and drop, add new ones, or delete ones you don&apos;t
-        want. To change the text or pictures inside a section, open the page on the site while signed
-        in and click the text or picture.
+        want. Pictures and videos are changed in the Images &amp; videos tab.
       </p>
 
       <section className="space-y-3">

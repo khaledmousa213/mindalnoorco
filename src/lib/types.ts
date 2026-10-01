@@ -8,6 +8,15 @@ export interface ProductSpecRow {
   value: string;
 }
 
+/** A transducer sold with / for an ultrasound system. */
+export interface ProductProbe {
+  id: string;
+  name: string;
+  description: string;
+  /** Storage download URL. Optional. */
+  image: string;
+}
+
 export interface Product {
   id: string;
   /** URL-safe identifier used in /product/:slug. Unique across the catalog. */
@@ -28,8 +37,12 @@ export interface Product {
   specs: ProductSpecRow[];
   /** Free text, e.g. "Request a quote" or "From $18,500". Optional. */
   priceRange: string;
-  /** Storage download URL for a PDF datasheet. Optional. */
+  /** Storage download URL for the product catalog / brochure PDF. Optional. */
   datasheetUrl: string;
+  /** Real-world photos (installations, in use), shown in their own section. */
+  photos: string[];
+  /** Ultrasound probes / transducers, shown in their own section when present. */
+  probes: ProductProbe[];
   isFeatured: boolean;
   /** Draft products are hidden from the public site but visible in admin. */
   isPublished: boolean;
@@ -77,6 +90,8 @@ export interface QuoteRequest {
   email: string;
   phone: string;
   organization: string;
+  /** City / country, as typed by the visitor. */
+  location: string;
   message: string;
   /** Products the enquiry is about (empty for a general contact-page message). */
   products: QuoteRequestProductRef[];

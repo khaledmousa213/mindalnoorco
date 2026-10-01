@@ -10,6 +10,8 @@ export const COMPANY = {
   addressLine: 'King Abdullah II St, Amman, Jordan',
   phoneDisplay: '+962 7 9888 7766',
   phoneHref: '+96279888766',
+  /** WhatsApp number for the chat buttons, with country code. Leave '' to hide the buttons. */
+  whatsapp: '+970 56 837 6775',
   email: 'info@mindalnoor.com',
   salesEmail: 'sales@mindalnoor.com',
   /** Optional: full Google Maps link to your showroom. Leave '' to hide the map button. */

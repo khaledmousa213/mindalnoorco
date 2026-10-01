@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { ChevronDown, Mail, Phone } from 'lucide-react';
+import { ChevronDown, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { useQuoteRequests } from '../../hooks/useCatalog';
 import { setQuoteStatus } from '../../lib/quotes';
 import { EmptyState, ErrorNote, PageLoader } from '../../components/ui';
 import type { QuoteStatus } from '../../lib/types';
+import { whatsAppLink } from '../../lib/whatsapp';
 
 const STATUS_STYLE: Record<QuoteStatus, string> = {
   new: 'bg-teal-100 text-teal-800 border-teal-300',
@@ -95,18 +96,37 @@ export const AdminRequestsInbox = () => {
                 {open && (
                   <div className="px-4 pb-4 pt-1 space-y-3 border-t border-slate-100">
                     <div className="flex flex-wrap gap-3 text-xs">
-                      <a
-                        href={`mailto:${r.email}`}
-                        className="inline-flex items-center gap-1.5 font-semibold text-teal-700 hover:underline"
-                      >
-                        <Mail className="w-3.5 h-3.5" /> {r.email}
-                      </a>
-                      <a
-                        href={`tel:${r.phone}`}
-                        className="inline-flex items-center gap-1.5 font-semibold text-teal-700 hover:underline"
-                      >
-                        <Phone className="w-3.5 h-3.5" /> {r.phone}
-                      </a>
+                      {r.phone && (
+                        <a
+                          href={`tel:${r.phone}`}
+                          className="inline-flex items-center gap-1.5 font-semibold text-teal-700 hover:underline"
+                        >
+                          <Phone className="w-3.5 h-3.5" /> {r.phone}
+                        </a>
+                      )}
+                      {r.phone && (
+                        <a
+                          href={whatsAppLink(r.phone)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 font-semibold text-emerald-700 hover:underline"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+                        </a>
+                      )}
+                      {r.email && (
+                        <a
+                          href={`mailto:${r.email}`}
+                          className="inline-flex items-center gap-1.5 font-semibold text-teal-700 hover:underline"
+                        >
+                          <Mail className="w-3.5 h-3.5" /> {r.email}
+                        </a>
+                      )}
+                      {r.location && (
+                        <span className="inline-flex items-center gap-1.5 font-semibold text-slate-600">
+                          <MapPin className="w-3.5 h-3.5" /> {r.location}
+                        </span>
+                      )}
                     </div>
 
                     {r.products.length > 0 && (

@@ -34,6 +34,8 @@ function fromDoc(id: string, data: Record<string, unknown>): Product {
     specs: (data.specs as Product['specs']) ?? [],
     priceRange: (data.priceRange as string) ?? '',
     datasheetUrl: (data.datasheetUrl as string) ?? '',
+    photos: (data.photos as string[]) ?? [],
+    probes: (data.probes as Product['probes']) ?? [],
     isFeatured: Boolean(data.isFeatured),
     isPublished: Boolean(data.isPublished),
     order: typeof data.order === 'number' ? (data.order as number) : 0,

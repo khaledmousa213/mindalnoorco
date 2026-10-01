@@ -1,5 +1,5 @@
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
-import { Inbox, LayoutGrid, LayoutTemplate, LogOut, Package } from 'lucide-react';
+import { Images, Inbox, LayoutGrid, LayoutTemplate, LogOut, Menu, Package, Type } from 'lucide-react';
 import { signOutAdmin, useAuth } from '../../lib/auth';
 import { Container } from '../../components/ui';
 import { AdminProductList } from './AdminProductList';
@@ -8,6 +8,9 @@ import { AdminCategories } from './AdminCategories';
 import { AdminRequestsInbox } from './AdminRequestsInbox';
 import { AdminPageBuilder } from './AdminPageBuilder';
 import { AdminPageBuilderEditor } from './AdminPageBuilderEditor';
+import { AdminMedia } from './AdminMedia';
+import { AdminMenus } from './AdminMenus';
+import { AdminTexts } from './AdminTexts';
 
 const tabClass = ({ isActive }: { isActive: boolean }) =>
   `flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
@@ -40,8 +43,17 @@ export const AdminDashboard = () => {
         <NavLink to="/admin/categories" className={tabClass}>
           <LayoutGrid className="w-3.5 h-3.5" /> Categories
         </NavLink>
+        <NavLink to="/admin/media" className={tabClass}>
+          <Images className="w-3.5 h-3.5" /> Images &amp; videos
+        </NavLink>
+        <NavLink to="/admin/texts" className={tabClass}>
+          <Type className="w-3.5 h-3.5" /> Texts
+        </NavLink>
         <NavLink to="/admin/pages" className={tabClass}>
           <LayoutTemplate className="w-3.5 h-3.5" /> Pages
+        </NavLink>
+        <NavLink to="/admin/menus" className={tabClass}>
+          <Menu className="w-3.5 h-3.5" /> Menus
         </NavLink>
         <NavLink to="/admin/requests" className={tabClass}>
           <Inbox className="w-3.5 h-3.5" /> Requests
@@ -54,8 +66,11 @@ export const AdminDashboard = () => {
         <Route path="products/new" element={<AdminProductForm mode="create" />} />
         <Route path="products/:id" element={<AdminProductForm mode="edit" />} />
         <Route path="categories" element={<AdminCategories />} />
+        <Route path="media" element={<AdminMedia />} />
+        <Route path="texts" element={<AdminTexts />} />
         <Route path="pages" element={<AdminPageBuilder />} />
         <Route path="pages/:pageId" element={<AdminPageBuilderEditor />} />
+        <Route path="menus" element={<AdminMenus />} />
         <Route path="requests" element={<AdminRequestsInbox />} />
         <Route path="*" element={<Navigate to="products" replace />} />
       </Routes>

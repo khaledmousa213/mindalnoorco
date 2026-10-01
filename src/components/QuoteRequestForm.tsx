@@ -1,7 +1,8 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
-import { CheckCircle2, Loader2, Send } from 'lucide-react';
+import { CheckCircle2, Loader2, MessageCircle, Send } from 'lucide-react';
 import { createQuoteRequest } from '../lib/quotes';
 import { COMPANY } from '../lib/company';
+import { whatsAppLink } from '../lib/whatsapp';
 import type { QuoteRequestProductRef } from '../lib/types';
 
 interface QuoteRequestFormProps {
@@ -11,7 +12,7 @@ interface QuoteRequestFormProps {
   onSuccess?: () => void;
 }
 
-const EMPTY = { name: '', email: '', phone: '', organization: '', message: '' };
+const EMPTY = { name: '', email: '', phone: '', organization: '', location: '', message: '' };
 
 const inputClass =
   'w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition';
@@ -41,6 +42,7 @@ export const QuoteRequestForm = ({ products, source, onSuccess }: QuoteRequestFo
         email: form.email.trim(),
         phone: form.phone.trim(),
         organization: form.organization.trim(),
+        location: form.location.trim(),
         message: form.message.trim(),
         products,
         source,
@@ -60,8 +62,8 @@ export const QuoteRequestForm = ({ products, source, onSuccess }: QuoteRequestFo
         </div>
         <h3 className="text-lg font-bold text-slate-900">Request sent</h3>
         <p className="text-xs text-slate-600 max-w-sm mx-auto">
-          Thank you, {form.name || 'there'}. Our team will reply to <strong>{form.email}</strong>{' '}
-          within one business day.
+          Thank you, {form.name || 'there'}. Our team will contact you at{' '}
+          <strong>{form.email || form.phone}</strong> within one business day.
         </p>
       </div>
     );
@@ -99,11 +101,20 @@ export const QuoteRequestForm = ({ products, source, onSuccess }: QuoteRequestFo
             className={inputClass}
           />
         </Field>
-        <Field label="Email *">
-          <input type="email" required value={form.email} onChange={update('email')} className={inputClass} />
-        </Field>
-        <Field label="Phone *">
+        <Field label="Phone / WhatsApp *">
           <input type="tel" required value={form.phone} onChange={update('phone')} className={inputClass} />
+        </Field>
+        <Field label="Email">
+          <input type="email" value={form.email} onChange={update('email')} className={inputClass} />
+        </Field>
+        <Field label="City / country">
+          <input
+            type="text"
+            value={form.location}
+            onChange={update('location')}
+            placeholder="e.g. Amman, Jordan"
+            className={inputClass}
+          />
         </Field>
       </div>
 
@@ -138,6 +149,25 @@ export const QuoteRequestForm = ({ products, source, onSuccess }: QuoteRequestFo
           </>
         )}
       </button>
+
+      {COMPANY.whatsapp && (
+        <p className="text-center text-xs text-slate-500">
+          Prefer WhatsApp?{' '}
+          <a
+            href={whatsAppLink(
+              COMPANY.whatsapp,
+              products.length > 0
+                ? `Hello, I'd like a quote for: ${products.map((p) => p.name).join(', ')}`
+                : 'Hello, I have a question.',
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 font-bold text-emerald-700 hover:underline"
+          >
+            <MessageCircle className="w-3.5 h-3.5" /> Chat with us
+          </a>
+        </p>
+      )}
     </form>
   );
 };
