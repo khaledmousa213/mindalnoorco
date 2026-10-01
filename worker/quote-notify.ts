@@ -28,6 +28,13 @@ interface QuotePayload {
   products?: { id: string; name: string }[];
 }
 
+/**
+ * Secrets typed into a terminal can pick up invisible characters (e.g. the
+ * right-to-left marks an Arabic keyboard inserts), which Resend rejects.
+ * Keep printable ASCII only.
+ */
+const cleanAddress = (value: string): string => value.replace(/[^\x20-\x7E]/g, '').trim();
+
 const json = (data: unknown, status = 200): Response =>
   new Response(JSON.stringify(data), {
     status,
@@ -106,8 +113,9 @@ export async function handleQuoteNotify(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: env.QUOTE_NOTIFY_FROM,
-        to: [env.QUOTE_NOTIFY_TO],
+        from: cleanAddress(env.QUOTE_NOTIFY_FROM),
+        // Several recipients may be given, separated by commas.
+        to: cleanAddress(env.QUOTE_NOTIFY_TO).split(',').map((a) => a.trim()).filter(Boolean),
         ...(payload.email ? { reply_to: payload.email } : {}),
         subject: `Quote request from ${payload.name}${
           payload.organization ? ` (${payload.organization})` : ''
