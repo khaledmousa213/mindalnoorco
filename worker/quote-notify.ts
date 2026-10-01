@@ -115,7 +115,19 @@ export async function handleQuoteNotify(
         html,
       }),
     });
-    return json({ ok: true, emailed: res.ok, status: res.status });
+    if (!res.ok) {
+      // Resend explains rejections (unverified domain, bad "from", ...) in the body; surface it for debugging.
+      const detail = await res.text().catch(() => '');
+      console.error('Resend rejected quote notification', res.status, detail);
+      let message = '';
+      try {
+        message = (JSON.parse(detail) as { message?: string }).message ?? '';
+      } catch {
+        /* not JSON */
+      }
+      return json({ ok: true, emailed: false, status: res.status, error: message });
+    }
+    return json({ ok: true, emailed: true, status: res.status });
   } catch {
     return json({ ok: true, emailed: false });
   }
