@@ -8,8 +8,8 @@ export const COMPANY = {
   tagline: 'Medical diagnostic imaging systems',
   city: 'Amman, Jordan',
   addressLine: 'King Abdullah II St, Amman, Jordan',
-  phoneDisplay: '+962 7 9888 7766',
-  phoneHref: '+96279888766',
+  phoneDisplay: '+970 56 837 6775',
+  phoneHref: '+970568376775',
   /** WhatsApp number for the chat buttons, with country code. Leave '' to hide the buttons. */
   whatsapp: '+970 56 837 6775',
   email: 'info@mindalnoor.com',
