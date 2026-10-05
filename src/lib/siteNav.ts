@@ -19,9 +19,9 @@ export interface SiteNav {
 
 export const DEFAULT_HEADER_NAV: NavLinkItem[] = [
   { id: 'home', label: 'Home', path: '/' },
-  { id: 'catalog', label: 'Catalog', path: '/catalog' },
-  { id: 'about', label: 'About', path: '/about' },
+  { id: 'catalog', label: 'Products', path: '/catalog' },
   { id: 'contact', label: 'Contact', path: '/contact' },
+  { id: 'about', label: 'About', path: '/about' },
 ];
 
 export const DEFAULT_FOOTER_NAV: NavLinkItem[] = [

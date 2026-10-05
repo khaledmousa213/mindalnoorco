@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ChevronDown, LayoutGrid, Lock, Menu, ShieldCheck, X } from 'lucide-react';
+import { ChevronDown, Menu, ShieldCheck, X } from 'lucide-react';
 import { MindAlnoorLogo } from './MindAlnoorLogo';
 import { MindrayLogo } from './MindrayLogo';
 import { useCategories } from '../hooks/useCatalog';
@@ -63,50 +63,55 @@ export const Header = () => {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1 bg-slate-100/90 p-1.5 rounded-full border border-slate-200/80">
-          {nav.header.map((item) => (
-            <NavLink key={item.id} to={item.path} end={item.path === '/'} className={navLinkClass}>
-              {item.label}
-            </NavLink>
-          ))}
-
-          <div className="relative" ref={catRef}>
-            <button
-              onClick={() => setCatOpen((v) => !v)}
-              className="px-3.5 py-1.5 rounded-full text-xs font-bold text-slate-700 hover:text-teal-700 hover:bg-teal-50/70 transition-all cursor-pointer flex items-center gap-1.5"
-            >
-              <LayoutGrid className="w-3.5 h-3.5 text-teal-500" />
-              <span>Categories</span>
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${catOpen ? 'rotate-180' : ''}`} />
-            </button>
-            {catOpen && categoryTree.length > 0 && (
-              <div className="absolute top-full left-0 mt-2 w-[22rem] bg-white rounded-2xl shadow-xl border border-slate-200 p-2 z-50 max-h-[70vh] overflow-y-auto">
-                {categoryTree.map((top) => (
-                  <div key={top.id} className="py-1">
-                    <Link
-                      to={`/category/${top.slug}`}
-                      className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-900 hover:bg-teal-50 hover:text-teal-700 transition"
-                    >
-                      {top.name}
-                    </Link>
-                    {top.children.length > 0 && (
-                      <div className="pl-3 space-y-0.5">
-                        {top.children.map((child) => (
-                          <Link
-                            key={child.id}
-                            to={`/catalog?category=${encodeURIComponent(child.slug)}`}
-                            className="block px-3 py-1.5 rounded-lg text-[11px] font-semibold text-slate-500 hover:bg-slate-50 hover:text-teal-700 transition"
-                          >
-                            {child.name}
-                          </Link>
-                        ))}
+          {nav.header.map((item) =>
+            item.path === '/catalog' ? (
+              // The products link also opens the category menu from its arrow.
+              <div key={item.id} className="relative flex items-center" ref={catRef}>
+                <NavLink to={item.path} className={navLinkClass}>
+                  {item.label}
+                </NavLink>
+                <button
+                  onClick={() => setCatOpen((v) => !v)}
+                  className="-ml-1 p-1.5 rounded-full text-slate-500 hover:text-teal-700 hover:bg-teal-50/70 transition cursor-pointer"
+                  aria-label="Show product categories"
+                  aria-expanded={catOpen}
+                >
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform ${catOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {catOpen && categoryTree.length > 0 && (
+                  <div className="absolute top-full left-0 mt-2 w-[22rem] bg-white rounded-2xl shadow-xl border border-slate-200 p-2 z-50 max-h-[70vh] overflow-y-auto">
+                    {categoryTree.map((top) => (
+                      <div key={top.id} className="py-1">
+                        <Link
+                          to={`/category/${top.slug}`}
+                          className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-900 hover:bg-teal-50 hover:text-teal-700 transition"
+                        >
+                          {top.name}
+                        </Link>
+                        {top.children.length > 0 && (
+                          <div className="pl-3 space-y-0.5">
+                            {top.children.map((child) => (
+                              <Link
+                                key={child.id}
+                                to={`/catalog?category=${encodeURIComponent(child.slug)}`}
+                                className="block px-3 py-1.5 rounded-lg text-[11px] font-semibold text-slate-500 hover:bg-slate-50 hover:text-teal-700 transition"
+                              >
+                                {child.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
-            )}
-          </div>
-
+            ) : (
+              <NavLink key={item.id} to={item.path} end={item.path === '/'} className={navLinkClass}>
+                {item.label}
+              </NavLink>
+            ),
+          )}
         </nav>
 
         {/* Right actions */}
@@ -118,22 +123,14 @@ export const Header = () => {
             Request a quote
           </button>
 
-          {isAdmin ? (
+          {/* Visitors sign in from "Staff sign in" in the footer; admins get a shortcut here. */}
+          {isAdmin && (
             <Link
               to="/admin"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-full text-xs font-bold transition shadow-sm border border-slate-700"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-lime-400" />
               <span className="hidden sm:inline">Admin</span>
-            </Link>
-          ) : (
-            <Link
-              to="/admin/login"
-              className="hidden md:inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-teal-700 rounded-full text-xs font-bold transition border border-slate-200"
-              title="Admin sign in"
-            >
-              <Lock className="w-3.5 h-3.5 text-slate-500" />
-              <span>Sign in</span>
             </Link>
           )}
 
@@ -213,14 +210,6 @@ export const Header = () => {
           >
             Request a quote
           </button>
-          {!isAdmin && (
-            <Link
-              to="/admin/login"
-              className="block px-3 py-2 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50"
-            >
-              Admin sign in
-            </Link>
-          )}
         </div>
       )}
     </header>
