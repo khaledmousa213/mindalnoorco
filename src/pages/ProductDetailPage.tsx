@@ -4,6 +4,8 @@ import {
   ArrowLeft,
   Check,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   FileText,
   ImageOff,
   MessageCircle,
@@ -37,11 +39,13 @@ export const ProductDetailPage = () => {
   const [copied, setCopied] = useState(false);
   const [tab, setTab] = useState<TabKey | null>(null);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [zoom, setZoom] = useState<number | null>(null);
 
   useEffect(() => {
     setActiveImage(0);
     setTab(null);
     setLightbox(null);
+    setZoom(null);
   }, [slug]);
 
   // If not in the published list (e.g. a draft opened by an admin), try a direct read.
@@ -118,7 +122,7 @@ export const ProductDetailPage = () => {
         {product.brand && (
           <span className="text-xs font-bold uppercase tracking-wider text-teal-700">{product.brand}</span>
         )}
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
           {product.name}
         </h1>
       </div>
@@ -126,15 +130,41 @@ export const ProductDetailPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left: product picture */}
         <div className="lg:col-span-7 space-y-3">
-          <div className="bg-white rounded-3xl overflow-hidden border border-slate-200 h-72 sm:h-[28rem] flex items-center justify-center">
+          <div className="relative group bg-white rounded-3xl overflow-hidden border border-slate-200 h-72 sm:h-[28rem] flex items-center justify-center">
             {product.images[activeImage] ? (
-              <img
-                src={product.images[activeImage]}
-                alt={product.name}
-                className="w-full h-full object-contain"
-              />
+              <button
+                type="button"
+                onClick={() => setZoom(activeImage)}
+                className="w-full h-full cursor-zoom-in"
+                aria-label="Enlarge picture"
+              >
+                <img src={product.images[activeImage]} alt={product.name} className="w-full h-full object-contain" />
+              </button>
             ) : (
               <ImageOff className="w-12 h-12 text-slate-300" />
+            )}
+            {product.images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setActiveImage((i) => (i - 1 + product.images.length) % product.images.length)}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 border border-slate-200 shadow flex items-center justify-center text-slate-700 hover:bg-white cursor-pointer sm:opacity-0 sm:group-hover:opacity-100 transition"
+                  aria-label="Previous picture"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveImage((i) => (i + 1) % product.images.length)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 border border-slate-200 shadow flex items-center justify-center text-slate-700 hover:bg-white cursor-pointer sm:opacity-0 sm:group-hover:opacity-100 transition"
+                  aria-label="Next picture"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+                <span className="absolute bottom-3 right-3 text-[11px] font-bold bg-slate-900/70 text-white px-2 py-0.5 rounded-full">
+                  {activeImage + 1} / {product.images.length}
+                </span>
+              </>
             )}
           </div>
           {product.images.length > 1 && (
@@ -177,7 +207,7 @@ export const ProductDetailPage = () => {
             {product.priceRange && (
               <div className="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3">
                 <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">Pricing</span>
-                <span className="text-lg font-black text-slate-900">{product.priceRange}</span>
+                <span className="text-lg font-extrabold text-slate-900">{product.priceRange}</span>
               </div>
             )}
 
@@ -314,7 +344,7 @@ export const ProductDetailPage = () => {
                       </div>
                     )}
                     <div className="p-4 space-y-1">
-                      <p className="text-sm font-black text-slate-900">{probe.name}</p>
+                      <p className="text-sm font-extrabold text-slate-900">{probe.name}</p>
                       {probe.description && (
                         <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line">{probe.description}</p>
                       )}
@@ -330,13 +360,25 @@ export const ProductDetailPage = () => {
       {/* Related */}
       {related.length > 0 && (
         <section className="space-y-5">
-          <h2 className="text-lg font-black text-slate-900">Related products</h2>
+          <h2 className="text-lg font-extrabold text-slate-900">Related products</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {related.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
           </div>
         </section>
+      )}
+
+      {zoom !== null && (
+        <Lightbox
+          images={product.images}
+          index={zoom}
+          onIndex={(i) => {
+            setZoom(i);
+            setActiveImage(i);
+          }}
+          onClose={() => setZoom(null)}
+        />
       )}
 
       {lightbox !== null && (

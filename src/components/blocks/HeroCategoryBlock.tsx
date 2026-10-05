@@ -24,7 +24,7 @@ export function HeroCategoryBlock({ ctx }: { ctx: CategoryBlockContext }) {
           <span className="text-slate-500">/</span>
           <span className="text-white font-bold">{category.name}</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-black tracking-tight max-w-2xl">{category.name}</h1>
+        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight max-w-2xl">{category.name}</h1>
         {category.description && (
           <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
             {category.description}

@@ -6,7 +6,7 @@ export const NotFoundPage = () => {
   return (
     <div className="flex-1 flex items-center justify-center px-4 py-24">
       <div className="text-center space-y-4 max-w-md">
-        <p className="text-5xl font-black text-slate-900">404</p>
+        <p className="text-5xl font-extrabold text-slate-900">404</p>
         <p className="text-sm text-slate-500">
           We couldn&apos;t find that page. It may have moved or the link is out of date.
         </p>

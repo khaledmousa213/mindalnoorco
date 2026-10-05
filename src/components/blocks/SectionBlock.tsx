@@ -25,7 +25,7 @@ export function SectionBlock({ block }: { block: Block }) {
   if (media.length > 0 && media.every(isEmptyMedia)) return null;
 
   const content = (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {elements.map((element) => (
         <ElementView key={element.id} element={element} tone={tone} />
       ))}
@@ -45,7 +45,7 @@ export function SectionBlock({ block }: { block: Block }) {
       );
     case 'card':
       return (
-        <Container className="py-4">
+        <Container className="py-6 sm:py-8">
           <div className={narrow}>
             <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">{content}</div>
           </div>
@@ -53,15 +53,15 @@ export function SectionBlock({ block }: { block: Block }) {
       );
     case 'dark':
       return (
-        <Container className="py-4">
+        <Container className="py-6 sm:py-8">
           <div className={narrow}>
-            <div className="bg-slate-900 text-white rounded-2xl p-6">{content}</div>
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-3xl p-6 sm:p-10">{content}</div>
           </div>
         </Container>
       );
     default:
       return (
-        <Container className="py-4 sm:py-6">
+        <Container className="py-6 sm:py-10">
           <div className={narrow}>{content}</div>
         </Container>
       );

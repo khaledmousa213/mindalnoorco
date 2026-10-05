@@ -20,13 +20,13 @@ const JUSTIFY: Record<Align, string> = {
   right: 'justify-end',
 };
 const HEADING: Record<1 | 2 | 3, string> = {
-  1: 'text-3xl sm:text-5xl font-black leading-tight tracking-tight',
-  2: 'text-2xl font-black tracking-tight',
-  3: 'text-lg font-black',
+  1: 'text-3xl sm:text-5xl font-extrabold leading-tight tracking-tight',
+  2: 'text-2xl sm:text-3xl font-extrabold tracking-tight',
+  3: 'text-lg sm:text-xl font-extrabold',
 };
 const TEXT_SIZE: Record<Size, string> = {
-  sm: 'text-xs leading-relaxed',
-  md: 'text-sm leading-relaxed',
+  sm: 'text-sm leading-relaxed',
+  md: 'text-[15px] leading-relaxed',
   lg: 'text-base sm:text-lg leading-relaxed',
 };
 const SPACER: Record<Size, string> = { sm: 'h-3', md: 'h-8', lg: 'h-16' };
@@ -140,23 +140,28 @@ export function ElementView({ element, tone }: Props) {
 
     case 'cards':
       return (
-        <div className={`grid ${COLUMNS[element.columns]} gap-3`}>
+        <div className={`grid ${COLUMNS[element.columns]} gap-4`}>
           {element.items.map((item) => {
             const Icon = CARD_ICONS[item.icon] ?? CARD_ICONS.ShieldCheck;
             const body = (
               <>
-                <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
-                  <Icon className="w-4 h-4" />
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-teal-50 to-sky-50 text-teal-700 flex items-center justify-center shrink-0 ring-1 ring-teal-100">
+                  <Icon className="w-5 h-5" />
                 </div>
                 <div className="min-w-0 flex-1 text-left">
-                  <p className="text-xs font-bold text-slate-900">{item.title}</p>
-                  <p className="text-xs text-slate-500 leading-relaxed mt-0.5 break-words">{item.text}</p>
+                  <p className="text-sm font-bold text-slate-900">{item.title}</p>
+                  <p className="text-sm text-slate-500 leading-relaxed mt-1 break-words">{item.text}</p>
                 </div>
               </>
             );
-            const cardClass = 'bg-white border border-slate-200 rounded-2xl p-4 flex gap-3 h-full';
+            const cardClass =
+              'bg-white border border-slate-200 rounded-2xl p-5 flex gap-4 h-full shadow-sm shadow-slate-200/50';
             return item.href ? (
-              <SmartLink key={item.id} href={item.href} className={`${cardClass} hover:border-teal-400 transition`}>
+              <SmartLink
+                key={item.id}
+                href={item.href}
+                className={`${cardClass} hover:border-teal-400 hover:-translate-y-0.5 hover:shadow-md transition`}
+              >
                 {body}
               </SmartLink>
             ) : (

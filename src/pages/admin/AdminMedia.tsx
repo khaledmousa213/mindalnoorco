@@ -121,7 +121,7 @@ function PageMedia({ pageId, label }: { pageId: string; label: string }) {
 
   return (
     <section className="space-y-3">
-      <h2 className="text-base font-black text-slate-900">{label}</h2>
+      <h2 className="text-base font-extrabold text-slate-900">{label}</h2>
       {error && <ErrorNote message={error} />}
       {!ready ? (
         <PageLoader label="Preparing this page…" />
@@ -295,7 +295,7 @@ function MediaCard({ title, action, children }: { title: string; action?: ReactN
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-sm">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-sm font-black text-slate-900">{title}</h3>
+        <h3 className="text-sm font-extrabold text-slate-900">{title}</h3>
         {action}
       </div>
       {children}

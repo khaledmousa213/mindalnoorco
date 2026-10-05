@@ -7,7 +7,7 @@ export const AboutPage = () => {
   const page = usePageBuilder('about');
 
   return (
-    <div className="py-6 pb-16">
+    <div className="pb-16">
       <PageCanvas blocks={page.blocks} />
     </div>
   );

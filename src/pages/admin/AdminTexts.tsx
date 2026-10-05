@@ -97,7 +97,7 @@ function PageTexts({ pageId, label }: { pageId: string; label: string }) {
 
   return (
     <section className="space-y-3">
-      <h2 className="text-base font-black text-slate-900">{label}</h2>
+      <h2 className="text-base font-extrabold text-slate-900">{label}</h2>
       {error && <ErrorNote message={error} />}
       {!ready ? (
         <PageLoader label="Preparing this page…" />
@@ -114,7 +114,7 @@ function SiteWideTexts() {
   const { content, setValue } = useSiteContent();
   return (
     <section className="space-y-3">
-      <h2 className="text-base font-black text-slate-900">Every page</h2>
+      <h2 className="text-base font-extrabold text-slate-900">Every page</h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
         <TextCard title="Footer">
           {SITE_TEXTS.map((text) => (
@@ -309,7 +309,7 @@ function TextCard({ title, subtitle, children }: { title: string; subtitle?: str
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-sm">
       <div>
-        <h3 className="text-sm font-black text-slate-900">{title}</h3>
+        <h3 className="text-sm font-extrabold text-slate-900">{title}</h3>
         {subtitle && <p className="text-[11px] text-slate-400 truncate">{subtitle}</p>}
       </div>
       {children}

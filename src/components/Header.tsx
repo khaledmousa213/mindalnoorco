@@ -49,7 +49,7 @@ export const Header = () => {
         <Link to="/" className="flex items-center gap-2 sm:gap-3 group shrink-0" title="Mind Alnoor Co. — Home">
           <MindAlnoorLogo className="w-9 h-9 sm:w-11 sm:h-11 transition-transform group-hover:scale-105 shrink-0" />
           <div className="leading-tight">
-            <span className="text-base sm:text-lg font-black tracking-tight flex items-center gap-1">
+            <span className="text-base sm:text-lg font-extrabold tracking-tight flex items-center gap-1">
               <span className="text-sky-600">Mind</span>
               <span className="text-teal-600">Alnoor</span>
               <span className="text-lime-600 font-extrabold">Co.</span>

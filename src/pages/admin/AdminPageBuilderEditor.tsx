@@ -90,7 +90,7 @@ export const AdminPageBuilderEditor = () => {
       </div>
 
       <div>
-        <h2 className="text-lg font-black text-slate-900 tracking-tight">{label}</h2>
+        <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">{label}</h2>
         <p className="text-xs text-slate-500">
           This page&apos;s sections. Drag one by its handle to move it. Pictures and videos are changed in
           the Images &amp; videos tab.

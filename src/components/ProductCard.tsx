@@ -46,7 +46,7 @@ export const ProductCard = ({ product }: { product: Product }) => {
               {product.brand}
             </span>
           )}
-          <h3 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
+          <h3 className="text-base sm:text-lg font-extrabold text-slate-900 leading-tight">
             <Link to={`/product/${product.slug}`} className="hover:text-teal-700 transition">
               {product.name}
             </Link>
@@ -70,7 +70,7 @@ export const ProductCard = ({ product }: { product: Product }) => {
 
         <div className="pt-4 mt-3 border-t border-slate-100 space-y-3">
           {product.priceRange && (
-            <div className="text-sm font-black text-slate-900">{product.priceRange}</div>
+            <div className="text-sm font-extrabold text-slate-900">{product.priceRange}</div>
           )}
           <div className="grid grid-cols-2 gap-2">
             <Link

@@ -30,7 +30,7 @@ export const MindAlnoorLogo = ({ className = 'w-10 h-10', size, showText = false
 
       {showText && (
         <div className="flex flex-col leading-tight">
-          <span className="font-black text-slate-900 tracking-tight text-base sm:text-lg flex items-center gap-1">
+          <span className="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg flex items-center gap-1">
             <span className="text-sky-600">Mind</span>
             <span className="text-teal-600">Alnoor</span>
             <span className="text-lime-600 font-extrabold">Co.</span>

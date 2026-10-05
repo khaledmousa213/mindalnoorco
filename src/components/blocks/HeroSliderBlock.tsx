@@ -59,6 +59,11 @@ export function HeroSliderBlock({ block }: { block: Block }) {
       style={{ height: HEIGHT }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      // Keyboard users: stop rotating while focus is inside (e.g. on a slide button).
+      onFocus={() => setPaused(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setPaused(false);
+      }}
       onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
       onTouchEnd={(e) => {
         if (touchX.current === null) return;
@@ -189,7 +194,10 @@ function backgroundEmbed(src: string): string {
 }
 
 function SlideContent({ slide, visible }: { slide: HeroSlide; visible: boolean }) {
-  const enter = `transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`;
+  // Outgoing text fades out quickly; incoming text waits for it, so two slides' words never overlap.
+  const enter = `transition-all ease-out ${
+    visible ? 'opacity-100 translate-y-0 duration-700 delay-300' : 'opacity-0 -translate-y-2 duration-200'
+  }`;
 
   return (
     <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
@@ -202,7 +210,7 @@ function SlideContent({ slide, visible }: { slide: HeroSlide; visible: boolean }
             </span>
           </div>
         )}
-        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight text-white">
+        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight text-white">
           {slide.title}
         </h2>
         <p className="text-base sm:text-lg leading-relaxed text-slate-200 whitespace-pre-line">{slide.text}</p>

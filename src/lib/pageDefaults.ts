@@ -1,5 +1,6 @@
 import type { DefaultBlockInput } from '../components/blocks/types';
 import { COMPANY } from './company';
+import { whatsAppLink } from './whatsapp';
 
 /**
  * Built-in layouts. Until an admin customises a page these are shown as-is,
@@ -238,12 +239,38 @@ export const DEFAULT_ABOUT_BLOCKS: DefaultBlockInput[] = [
 
 export const DEFAULT_CONTACT_BLOCKS: DefaultBlockInput[] = [
   {
+    type: 'heroSlider',
+    props: {
+      interval: 6,
+      slides: [
+        {
+          id: 'contact',
+          media: 'image',
+          image: '',
+          video: '',
+          badge: 'Contact us',
+          title: 'Let’s talk about your imaging needs',
+          text: 'Pricing, product demonstrations, installation, service, or spare parts — our team replies within one business day.',
+          buttons: [
+            {
+              id: 'whatsapp',
+              label: 'Chat on WhatsApp',
+              href: whatsAppLink(COMPANY.whatsapp, 'Hello, I have a question.'),
+              variant: 'primary',
+            },
+            { id: 'call', label: 'Call us', href: `tel:${COMPANY.phoneHref}`, variant: 'secondary' },
+          ],
+        },
+      ],
+    },
+  },
+  {
     type: 'section',
     props: {
       style: 'plain',
       width: 'narrow',
       elements: [
-        { id: 'title', type: 'heading', level: 1, text: 'Contact us' },
+        { id: 'title', type: 'heading', level: 2, text: 'Reach us directly' },
         {
           id: 'intro',
           type: 'text',
@@ -253,8 +280,15 @@ export const DEFAULT_CONTACT_BLOCKS: DefaultBlockInput[] = [
         {
           id: 'cards',
           type: 'cards',
-          columns: 3,
+          columns: 2,
           items: [
+            {
+              id: 'whatsapp',
+              icon: 'MessageCircle',
+              title: 'WhatsApp',
+              text: COMPANY.whatsapp,
+              href: whatsAppLink(COMPANY.whatsapp),
+            },
             {
               id: 'phone',
               icon: 'PhoneCall',
@@ -283,6 +317,17 @@ export const DEFAULT_CONTACT_BLOCKS: DefaultBlockInput[] = [
       elements: [
         { id: 'title', type: 'heading', level: 3, text: 'Send a message' },
         { id: 'form', type: 'quoteForm' },
+      ],
+    },
+  },
+  {
+    type: 'section',
+    props: {
+      style: 'plain',
+      width: 'narrow',
+      elements: [
+        { id: 'title', type: 'heading', level: 2, text: 'Our showroom' },
+        { id: 'gallery', type: 'gallery', images: [] },
       ],
     },
   },

@@ -150,7 +150,7 @@ export const AdminCategories = () => {
     <div className="space-y-4">
       {editing ? (
         <form onSubmit={save} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 max-w-lg">
-          <h2 className="text-sm font-black text-slate-900">
+          <h2 className="text-sm font-extrabold text-slate-900">
             {editing.id ? 'Edit category' : editing.parentId ? 'New sub-category' : 'New category'}
           </h2>
 

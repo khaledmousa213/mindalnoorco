@@ -4,6 +4,7 @@ import {
   Clock,
   Mail,
   MapPin,
+  MessageCircle,
   PackageSearch,
   PhoneCall,
   ShieldCheck,
@@ -28,6 +29,7 @@ export const CARD_ICONS: Record<string, LucideIcon> = {
   PhoneCall,
   Mail,
   MapPin,
+  MessageCircle,
 };
 
 export const CARD_ICON_NAMES = Object.keys(CARD_ICONS);

@@ -9,7 +9,7 @@ export function SubCategoryGridBlock({ ctx }: { ctx: CategoryBlockContext }) {
 
   return (
     <Container className="py-10 space-y-6">
-      <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
         Browse {category.name} by series
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -32,7 +32,7 @@ export function SubCategoryGridBlock({ ctx }: { ctx: CategoryBlockContext }) {
             </div>
             <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
               <div>
-                <h3 className="font-black text-slate-900 group-hover:text-teal-700 transition">
+                <h3 className="font-extrabold text-slate-900 group-hover:text-teal-700 transition">
                   {child.name}
                 </h3>
                 {child.description && (

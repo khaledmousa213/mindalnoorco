@@ -19,7 +19,7 @@ export const Footer = () => {
             <Link to="/" className="flex items-center gap-3">
               <MindAlnoorLogo className="w-10 h-10" />
               <div>
-                <span className="text-lg font-black tracking-tight text-white flex items-center gap-1">
+                <span className="text-lg font-extrabold tracking-tight text-white flex items-center gap-1">
                   <span className="text-sky-400">Mind</span>
                   <span className="text-teal-400">Alnoor</span>
                   <span className="text-lime-400">Co.</span>

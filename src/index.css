@@ -1,1 +1,37 @@
 @import "tailwindcss";
+
+/*
+ * Typography: Figtree for headings, Noto Sans for body text, with Noto Sans
+ * Arabic as the fallback for Arabic text. Loaded in index.html.
+ */
+@theme {
+  --font-sans: "Noto Sans", "Noto Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Figtree", "Noto Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+  }
+
+  /* Visible keyboard focus everywhere, without showing rings on mouse clicks. */
+  :focus-visible {
+    outline: 2px solid var(--color-teal-600);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+    }
+  }
+}

@@ -8,7 +8,7 @@ export const ContactPage = () => {
   const page = usePageBuilder('contact');
 
   return (
-    <div className="py-6 pb-16">
+    <div className="pb-16">
       <PageCanvas blocks={page.blocks} />
     </div>
   );

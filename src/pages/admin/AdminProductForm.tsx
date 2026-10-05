@@ -278,7 +278,7 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
         >
           <ArrowLeft className="w-3.5 h-3.5" /> Back to products
         </Link>
-        <h2 className="text-sm font-black text-slate-900">
+        <h2 className="text-sm font-extrabold text-slate-900">
           {mode === 'create' ? 'New product' : 'Edit product'}
         </h2>
       </div>
@@ -423,7 +423,12 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
       {/* Images */}
       <section className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
         <div className="flex items-center justify-between">
-          <span className={labelClass}>Images</span>
+          <div>
+            <span className={labelClass}>Product pictures</span>
+            <p className="text-[11px] text-slate-400">
+              Select several at once. The first is the main picture; use ← → to reorder.
+            </p>
+          </div>
           <button
             type="button"
             onClick={() => imageInput.current?.click()}
@@ -642,7 +647,7 @@ export const AdminProductForm = ({ mode }: { mode: 'create' | 'edit' }) => {
         <button
           type="submit"
           disabled={saving || uploading}
-          className="px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-black transition flex items-center gap-2 cursor-pointer disabled:opacity-60"
+          className="px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-extrabold transition flex items-center gap-2 cursor-pointer disabled:opacity-60"
         >
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
           {mode === 'create' ? 'Create product' : 'Save changes'}

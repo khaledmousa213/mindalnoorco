@@ -24,7 +24,7 @@ export const AdminDashboard = () => {
     <Container className="py-6 space-y-5">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-black text-slate-900 tracking-tight">Admin</h1>
+          <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">Admin</h1>
           <p className="text-xs text-slate-500">Signed in as {user?.email}</p>
         </div>
         <button

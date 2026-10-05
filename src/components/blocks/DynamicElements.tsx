@@ -64,7 +64,7 @@ export function CategoryCardGrid() {
             <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
               <div>
                 <div className="flex items-center justify-between">
-                  <h3 className="font-black text-slate-900 group-hover:text-teal-700 transition">
+                  <h3 className="font-extrabold text-slate-900 group-hover:text-teal-700 transition">
                     {cat.name}
                   </h3>
                   <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
@@ -91,7 +91,7 @@ export function CategoryCardGrid() {
 
 export function QuoteFormElement() {
   return (
-    <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm text-slate-900">
+    <div className="text-slate-900">
       <QuoteRequestForm products={[]} source="contact" />
     </div>
   );

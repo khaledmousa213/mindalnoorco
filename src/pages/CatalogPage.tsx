@@ -92,7 +92,7 @@ export const CatalogPage = () => {
             ← {parentCategory.name}
           </Link>
         )}
-        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
           {activeCategory ? activeCategory.name : 'Product catalog'}
         </h1>
         {activeCategory?.description ? (

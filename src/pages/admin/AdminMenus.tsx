@@ -28,7 +28,7 @@ export function AdminMenus() {
         {MENUS.map((menu) => (
           <div key={menu.key} className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-sm">
             <div>
-              <h2 className="text-sm font-black text-slate-900">{menu.label}</h2>
+              <h2 className="text-sm font-extrabold text-slate-900">{menu.label}</h2>
               <p className="text-[11px] text-slate-500">
                 {menu.hint} Click a name or path to change it; drag to reorder.
               </p>
